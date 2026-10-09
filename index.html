@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Afsheen Collection - Mobile Dashboard</title>
+  <title>Afsheen Collection - Management System</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -26,6 +26,18 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--bg-pink); color: var(--text-main); padding: 12px; min-height: 100vh; }
 
+    /* Loading Overlay Animation */
+    #loadingOverlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 245, 247, 0.85); display: none; align-items: center; justify-content: center; z-index: 9998;
+      flex-direction: column; gap: 12px; font-weight: 700; color: var(--burgundy);
+    }
+    .spinner {
+      width: 42px; height: 42px; border: 4px solid var(--border-color);
+      border-top: 4px solid var(--burgundy); border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     #loginOverlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(139, 38, 62, 0.96); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 16px;
@@ -47,23 +59,21 @@
     .brand-title h1 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.5rem; }
     .brand-title p { color: var(--gold); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-    .filter-bar { display: flex; gap: 8px; width: 100%; }
-    .filter-bar select { flex: 1; }
-    .filter-bar select, .form-control {
-      padding: 10px 12px; border: 1.5px solid var(--border-color); border-radius: 8px; outline: none; font-size: 0.9rem; width: 100%;
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; align-items: center; }
+    .filter-bar select, .filter-bar input[type="date"], .form-control {
+      padding: 8px 12px; border: 1.5px solid var(--border-color); border-radius: 8px; outline: none; font-size: 0.85rem; background: #fff;
     }
     .filter-bar select:focus, .form-control:focus { border-color: var(--burgundy); box-shadow: 0 0 0 3px rgba(139, 38, 62, 0.1); }
 
     .btn {
-      padding: 12px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease; width: 100%;
+      padding: 10px 14px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease;
     }
     .btn-primary { background-color: var(--burgundy); color: #FFFFFF !important; }
     .btn-primary:active { background-color: var(--burgundy-dark); }
     .btn-gold { background-color: var(--gold); color: #FFFFFF !important; }
-    .btn-secondary { background-color: #EDF2F7; color: var(--text-main); width: auto; }
+    .btn-secondary { background-color: #EDF2F7; color: var(--text-main); }
 
-    /* Mobile First KPI Grid */
     .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
     @media(min-width: 768px) {
       .kpi-grid { grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 24px; }
@@ -106,10 +116,10 @@
     
     .invoice-logo-container {
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .invoice-logo-container img {
-      max-width: 120px;
+      max-width: 140px;
       height: auto;
       display: inline-block;
     }
@@ -127,6 +137,12 @@
 </head>
 <body>
 
+  <!-- Loading Animation Bar -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div>Refreshing System Data...</div>
+  </div>
+
   <!-- Auth Screen -->
   <div id="loginOverlay">
     <div class="login-card">
@@ -142,7 +158,7 @@
         <input type="password" id="loginPass" class="form-control" placeholder="••••••••">
       </div>
 
-      <button class="btn btn-primary" onclick="unlockDashboard()">
+      <button class="btn btn-primary" style="width: 100%;" onclick="unlockDashboard()">
         <i class="fa-solid fa-lock-open"></i> Login
       </button>
       <p id="loginError" style="color:#E53E3E; font-size:0.75rem; margin-top:10px; display:none;">Invalid Credentials!</p>
@@ -156,11 +172,19 @@
         <p>Sales & Invoice System</p>
       </div>
       <div class="filter-bar">
-        <select id="monthFilter" onchange="loadDashboardData()">
+        <select id="monthFilter" onchange="loadDashboardData()" style="flex:1;">
           <option value="LOADING">Loading Months...</option>
         </select>
-        <button class="btn btn-secondary" onclick="resetToCurrentMonth()">
-          <i class="fa-solid fa-rotate-left"></i>
+        
+        <!-- Custom Date Range Filters -->
+        <input type="date" id="filterStartDate" onchange="applyCustomDateFilter()">
+        <input type="date" id="filterEndDate" onchange="applyCustomDateFilter()">
+
+        <button class="btn btn-secondary" onclick="resetToCurrentMonth()" title="Reset Filters">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+        <button class="btn btn-gold" onclick="loadDashboardData(true)" title="Refresh System">
+          <i class="fa-solid fa-rotate"></i> Refresh
         </button>
       </div>
     </header>
@@ -207,7 +231,7 @@
             </button>
           </div>
 
-          <!-- Sale Form with Manual Product Entry -->
+          <!-- Sale Form -->
           <form id="saleForm" onsubmit="handleSaleSubmit(event)">
             <div class="form-group">
               <label>Date</label>
@@ -250,7 +274,7 @@
               <input type="number" id="saleShipping" class="form-control" min="0" value="0">
             </div>
 
-            <button type="submit" id="saleSubmitBtn" class="btn btn-primary" style="margin-top: 6px;">
+            <button type="submit" id="saleSubmitBtn" class="btn btn-primary" style="width:100%; margin-top: 6px;">
               <i class="fa-solid fa-check-circle"></i> Save Sale & Make Invoice
             </button>
           </form>
@@ -276,7 +300,7 @@
               </div>
             </div>
 
-            <button type="submit" id="purSubmitBtn" class="btn btn-gold" style="margin-top: 6px;">
+            <button type="submit" id="purSubmitBtn" class="btn btn-gold" style="width:100%; margin-top: 6px;">
               <i class="fa-solid fa-boxes-stacked"></i> Add Purchase
             </button>
           </form>
@@ -320,9 +344,9 @@
   <div class="modal-overlay" id="invoiceModal">
     <div class="invoice-card" id="invoiceCaptureArea">
       
-      <!-- LOGO IMAGE HEADER -->
+      <!-- LOGO / INVOICE BADGE IMAGE HEADER -->
       <div class="invoice-logo-container">
-        <img src="Afsheen Beauty Collection Badge.png" alt="Afsheen Badge Logo" id="invoiceBadgeLogo" onerror="this.style.display='none'">
+        <img src="Invoice image.png" alt="Afsheen Invoice Header Badge" id="invoiceBadgeLogo" onerror="this.src='Afsheen Beauty Collection Badge.png';">
       </div>
 
       <div class="invoice-header">
@@ -407,7 +431,7 @@
 
       if (emailInput === AUTH_EMAIL.toLowerCase() && passInput === AUTH_PASS) {
         document.getElementById("loginOverlay").style.display = "none";
-        loadDashboardData();
+        loadDashboardData(true);
       } else {
         document.getElementById("loginError").style.display = "block";
       }
@@ -421,21 +445,33 @@
       setTimeout(() => { el.style.display = "none"; }, 4000);
     }
 
-    function loadDashboardData() {
+    function loadDashboardData(showSpinner = false) {
+      if (showSpinner) {
+        document.getElementById("loadingOverlay").style.display = "flex";
+      }
+
       const filterVal = document.getElementById("monthFilter").value;
       const targetMonth = (filterVal === "LOADING" || !filterVal) ? "" : filterVal;
+      const startD = document.getElementById("filterStartDate").value;
+      const endD = document.getElementById("filterEndDate").value;
 
       const callbackName = "cb_" + Date.now();
       window[callbackName] = function(response) {
         delete window[callbackName];
         document.body.removeChild(script);
+        document.getElementById("loadingOverlay").style.display = "none";
+
         if (response.status === "success") {
           renderDashboard(response, targetMonth);
         }
       };
 
       const script = document.createElement("script");
-      script.src = SCRIPT_URL + "?action=getData&monthFilter=" + encodeURIComponent(targetMonth) + "&callback=" + callbackName;
+      script.src = SCRIPT_URL + "?action=getData&monthFilter=" + encodeURIComponent(targetMonth) 
+                 + "&startDate=" + encodeURIComponent(startD) 
+                 + "&endDate=" + encodeURIComponent(endD) 
+                 + "&callback=" + callbackName;
+      
       document.body.appendChild(script);
     }
 
@@ -462,15 +498,25 @@
       renderTransactionTable(cachedTransactions);
     }
 
+    function applyCustomDateFilter() {
+      const s = document.getElementById("filterStartDate").value;
+      const e = document.getElementById("filterEndDate").value;
+      if (s && e) {
+        loadDashboardData(true);
+      }
+    }
+
     function resetToCurrentMonth() {
       document.getElementById("monthFilter").value = "";
-      loadDashboardData();
+      document.getElementById("filterStartDate").value = "";
+      document.getElementById("filterEndDate").value = "";
+      loadDashboardData(true);
     }
 
     function renderTransactionTable(txList) {
       const tbody = document.getElementById("txTableBody");
       if (!txList || txList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No transactions.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No transactions found.</td></tr>`;
         return;
       }
 
@@ -540,7 +586,7 @@
         if (res.status === "success") {
           showAlert(`Sale Saved! Order #: ${res.orderNumber}`);
           document.getElementById("saleForm").reset();
-          loadDashboardData();
+          loadDashboardData(true);
         } else {
           showAlert(res.message, true);
         }
@@ -576,7 +622,7 @@
         if (res.status === "success") {
           showAlert("Stock Updated!");
           document.getElementById("purchaseForm").reset();
-          loadDashboardData();
+          loadDashboardData(true);
         } else {
           showAlert(res.message, true);
         }
