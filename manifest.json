@@ -1,0 +1,20 @@
+{
+  "name": "Afsheen Collection Sales",
+  "short_name": "Afsheen Sales",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFF5F7",
+  "theme_color": "#8B263E",
+  "icons": [
+    {
+      "src": "Afsheen Beauty Collection Badge.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Afsheen Beauty Collection Badge.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
