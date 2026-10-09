@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Afsheen Collection - Mobile Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --burgundy: #8B263E;
+      --burgundy-dark: #6B1D2F;
+      --gold: #C5A059;
+      --gold-hover: #b08d48;
+      --bg-pink: #FFF5F7;
+      --card-bg: #FFFFFF;
+      --text-main: #2D3748;
+      --text-muted: #718096;
+      --border-color: #E2E8F0;
+      --shadow: 0 4px 12px rgba(139, 38, 62, 0.08);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-pink); color: var(--text-main); padding: 12px; min-height: 100vh; }
+
+    #loginOverlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(139, 38, 62, 0.96); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 16px;
+    }
+    .login-card { background: #fff; padding: 28px 20px; border-radius: var(--radius); width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+    .login-card h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.5rem; margin-bottom: 4px; }
+
+    .app-container { max-width: 1200px; margin: 0 auto; }
+    header {
+      background: var(--card-bg); padding: 16px; border-radius: var(--radius);
+      box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px;
+      margin-bottom: 16px; border-bottom: 3px solid var(--gold);
+    }
+    @media(min-width: 768px) {
+      header { flex-direction: row; justify-content: space-between; align-items: center; padding: 20px; }
+      body { padding: 20px; }
+    }
+
+    .brand-title h1 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.5rem; }
+    .brand-title p { color: var(--gold); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+    .filter-bar { display: flex; gap: 8px; width: 100%; }
+    .filter-bar select { flex: 1; }
+    .filter-bar select, .form-control {
+      padding: 10px 12px; border: 1.5px solid var(--border-color); border-radius: 8px; outline: none; font-size: 0.9rem; width: 100%;
+    }
+    .filter-bar select:focus, .form-control:focus { border-color: var(--burgundy); box-shadow: 0 0 0 3px rgba(139, 38, 62, 0.1); }
+
+    .btn {
+      padding: 12px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease; width: 100%;
+    }
+    .btn-primary { background-color: var(--burgundy); color: #FFFFFF !important; }
+    .btn-primary:active { background-color: var(--burgundy-dark); }
+    .btn-gold { background-color: var(--gold); color: #FFFFFF !important; }
+    .btn-secondary { background-color: #EDF2F7; color: var(--text-main); width: auto; }
+
+    /* Mobile First KPI Grid */
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+    @media(min-width: 768px) {
+      .kpi-grid { grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 24px; }
+    }
+    .kpi-card { background: var(--card-bg); padding: 14px 12px; border-radius: var(--radius); box-shadow: var(--shadow); border-left: 4px solid var(--burgundy); }
+    .kpi-card.gold-accent { border-left-color: var(--gold); }
+    .kpi-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+    .kpi-value { font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-top: 2px; }
+
+    .main-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 992px) { .main-grid { grid-template-columns: 1fr 1.6fr; gap: 24px; } }
+
+    .card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
+    .card-title { font-size: 1rem; font-weight: 700; color: var(--burgundy); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--bg-pink); padding-bottom: 8px; }
+
+    .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+    .tab-btn { flex: 1; padding: 10px; background: transparent; border: none; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+    .tab-btn.active { background: var(--burgundy); color: #FFF !important; }
+
+    .form-group { margin-bottom: 12px; text-align: left; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.82rem; }
+    th { background-color: var(--bg-pink); color: var(--burgundy); padding: 10px; font-weight: 700; white-space: nowrap; }
+    td { padding: 10px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+
+    .badge { padding: 4px 6px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+    .badge-sale { background: #E6FFFA; color: #234E52; }
+    .badge-purchase { background: #EBF8FF; color: #2B6CB0; }
+
+    /* Responsive Invoice Popup */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 10px; overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; }
+    .invoice-card { background: #FFF; width: 100%; max-width: 480px; border-radius: var(--radius); padding: 20px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    
+    .invoice-logo-container {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .invoice-logo-container img {
+      max-width: 120px;
+      height: auto;
+      display: inline-block;
+    }
+
+    .invoice-header { text-align: center; border-bottom: 2px dashed var(--gold); padding-bottom: 12px; margin-bottom: 14px; }
+    .invoice-header h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.3rem; margin-top: 4px; }
+    .invoice-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; margin-bottom: 14px; }
+    .invoice-totals { text-align: right; font-size: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 10px; }
+    .invoice-totals .grand-total { font-size: 1.1rem; font-weight: 700; color: var(--burgundy); margin-top: 4px; }
+
+    .alert-banner { padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 0.82rem; display: none; }
+    .alert-error { background: #FFF5F5; color: #C53030; border: 1px solid #FEB2B2; }
+    .alert-success { background: #F0FFF4; color: #276749; border: 1px solid #9AE6B4; }
+  </style>
+</head>
+<body>
+
+  <!-- Auth Screen -->
+  <div id="loginOverlay">
+    <div class="login-card">
+      <h2>AFSHEEN COLLECTION</h2>
+      <p style="font-size:0.8rem; color: var(--text-muted); margin-bottom: 16px;">System Access Login</p>
+      
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" class="form-control" placeholder="ibrahim@afsheencollection.pk">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" class="form-control" placeholder="••••••••">
+      </div>
+
+      <button class="btn btn-primary" onclick="unlockDashboard()">
+        <i class="fa-solid fa-lock-open"></i> Login
+      </button>
+      <p id="loginError" style="color:#E53E3E; font-size:0.75rem; margin-top:10px; display:none;">Invalid Credentials!</p>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <header>
+      <div class="brand-title">
+        <h1>AFSHEEN COLLECTION</h1>
+        <p>Sales & Invoice System</p>
+      </div>
+      <div class="filter-bar">
+        <select id="monthFilter" onchange="loadDashboardData()">
+          <option value="LOADING">Loading Months...</option>
+        </select>
+        <button class="btn btn-secondary" onclick="resetToCurrentMonth()">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </header>
+
+    <div id="globalAlert" class="alert-banner"></div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">Sales</div>
+        <div class="kpi-value" id="kpiSales">Rs.0</div>
+      </div>
+      <div class="kpi-card gold-accent">
+        <div class="kpi-title">Cost</div>
+        <div class="kpi-value" id="kpiCost">Rs.0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Profit</div>
+        <div class="kpi-value" id="kpiProfit" style="color: #276749;">Rs.0</div>
+      </div>
+      <div class="kpi-card gold-accent">
+        <div class="kpi-title">Orders</div>
+        <div class="kpi-value" id="kpiOrders">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Units</div>
+        <div class="kpi-value" id="kpiUnits">0</div>
+      </div>
+      <div class="kpi-card gold-accent">
+        <div class="kpi-title">Low Stock</div>
+        <div class="kpi-value" id="kpiLowStock" style="color: #C53030;">0</div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <div>
+        <div class="card">
+          <div class="tabs">
+            <button class="tab-btn active" id="tabSaleBtn" onclick="switchFormTab('sale')">
+              <i class="fa-solid fa-cart-plus"></i> Customer Sale
+            </button>
+            <button class="tab-btn" id="tabPurchaseBtn" onclick="switchFormTab('purchase')">
+              <i class="fa-solid fa-truck-ramp-box"></i> Add Stock
+            </button>
+          </div>
+
+          <!-- Sale Form with Manual Product Entry -->
+          <form id="saleForm" onsubmit="handleSaleSubmit(event)">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="saleDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Customer Name *</label>
+              <input type="text" id="saleCustomer" class="form-control" placeholder="e.g. Ayesha Khan" required>
+            </div>
+            <div class="form-group">
+              <label>Product Name (Write Product) *</label>
+              <input type="text" id="saleProductName" class="form-control" placeholder="e.g. Lip Velvet Shade 02 / Deal Pack" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="salePhone" class="form-control" placeholder="03001234567">
+              </div>
+              <div class="form-group">
+                <label>Quantity *</label>
+                <input type="number" id="saleQty" class="form-control" min="1" value="1" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" id="saleAddress" class="form-control" placeholder="Delivery Address">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Sale Price (Rs) *</label>
+                <input type="number" id="salePrice" class="form-control" min="0" step="0.01" required>
+              </div>
+              <div class="form-group">
+                <label>Cost/Unit (Rs) *</label>
+                <input type="number" id="saleCost" class="form-control" min="0" step="0.01" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Shipping Fee (Rs)</label>
+              <input type="number" id="saleShipping" class="form-control" min="0" value="0">
+            </div>
+
+            <button type="submit" id="saleSubmitBtn" class="btn btn-primary" style="margin-top: 6px;">
+              <i class="fa-solid fa-check-circle"></i> Save Sale & Make Invoice
+            </button>
+          </form>
+
+          <!-- Purchase Form -->
+          <form id="purchaseForm" onsubmit="handlePurchaseSubmit(event)" style="display: none;">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="purDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Product Name (Stock Purchase) *</label>
+              <input type="text" id="purProduct" class="form-control" placeholder="e.g. Foundation Tube Shade 01" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Unit Cost (Rs) *</label>
+                <input type="number" id="purPrice" class="form-control" min="0" step="0.01" required>
+              </div>
+              <div class="form-group">
+                <label>Quantity *</label>
+                <input type="number" id="purQty" class="form-control" min="1" step="1" required>
+              </div>
+            </div>
+
+            <button type="submit" id="purSubmitBtn" class="btn btn-gold" style="margin-top: 6px;">
+              <i class="fa-solid fa-boxes-stacked"></i> Add Purchase
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Transaction Log -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <span><i class="fa-solid fa-list-check"></i> Transactions</span>
+            <input type="text" id="searchBox" onkeyup="filterTable()" placeholder="Search..." class="form-control" style="width: 120px; font-size:0.75rem; padding: 6px 8px;">
+          </div>
+          
+          <div class="table-container" style="max-height: 420px; overflow-y: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Order #</th>
+                  <th>Type</th>
+                  <th>Customer</th>
+                  <th>Product</th>
+                  <th>Qty</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="txTableBody">
+                <tr><td colspan="8" style="text-align: center;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Responsive Invoice Modal -->
+  <div class="modal-overlay" id="invoiceModal">
+    <div class="invoice-card" id="invoiceCaptureArea">
+      
+      <!-- LOGO IMAGE HEADER -->
+      <div class="invoice-logo-container">
+        <img src="Afsheen Beauty Collection Badge.png" alt="Afsheen Badge Logo" id="invoiceBadgeLogo" onerror="this.style.display='none'">
+      </div>
+
+      <div class="invoice-header">
+        <h2>AFSHEEN COLLECTION</h2>
+        <p style="font-size: 0.7rem; color: var(--gold); font-weight:700;">LUXURY COSMETICS & BEAUTY</p>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Customer Invoice</p>
+      </div>
+
+      <div class="invoice-details">
+        <div>
+          <strong>Order #:</strong> <span id="invOrderNum">-</span><br>
+          <strong>Date:</strong> <span id="invDate">-</span>
+        </div>
+        <div style="text-align: right;">
+          <strong>Customer:</strong> <span id="invCustomer">-</span><br>
+          <strong>Phone:</strong> <span id="invPhone">-</span>
+        </div>
+      </div>
+
+      <div style="font-size: 0.8rem; margin-bottom: 12px;">
+        <strong>Address:</strong> <span id="invAddress">-</span>
+      </div>
+
+      <table style="width: 100%; margin-bottom: 14px;">
+        <thead>
+          <tr style="border-bottom: 2px solid #E2E8F0;">
+            <th style="background:none; color:#000; padding:6px;">Product</th>
+            <th style="background:none; color:#000; text-align:center; padding:6px;">Qty</th>
+            <th style="background:none; color:#000; text-align:right; padding:6px;">Price</th>
+            <th style="background:none; color:#000; text-align:right; padding:6px;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="invProduct" style="padding:6px;">-</td>
+            <td id="invQty" style="text-align: center; padding:6px;">0</td>
+            <td id="invPrice" style="text-align: right; padding:6px;">Rs.0</td>
+            <td id="invSubtotal" style="text-align: right; padding:6px;">Rs.0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="invoice-totals">
+        <div>Subtotal: <span id="invSubtotalText">Rs.0</span></div>
+        <div>Shipping: <span id="invShipping">Rs.0</span></div>
+        <div class="grand-total">Grand Total: <span id="invGrandTotal">Rs.0</span></div>
+      </div>
+
+      <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top:12px; border-top: 1px dashed #DDD; padding-top:8px;">
+        <p>🌸 Thank you for shopping with Afsheen Collection! 🌸</p>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-top: 14px;" data-html2canvas-ignore="true">
+        <button class="btn btn-gold" style="flex:1;" onclick="shareInvoiceImage()">
+          <i class="fa-solid fa-share-nodes"></i> Share Invoice (PNG)
+        </button>
+        <button class="btn btn-secondary" style="width:auto;" onclick="closeInvoiceModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzO6iEjfTL19jjO7hq-ywRqc8BtWKiVSrPUnTmlXkEiKZeR1v7u8lyuVxHoM-ptk39h0Q/exec";
+    
+    const AUTH_EMAIL = "ibrahim@afsheencollection.pk";
+    const AUTH_PASS = "Ibr@him1234**";
+
+    let cachedTransactions = [];
+    let currentActiveTx = null;
+
+    window.onload = function() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("saleDate").value = today;
+      document.getElementById("purDate").value = today;
+    };
+
+    function unlockDashboard() {
+      const emailInput = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const passInput = document.getElementById("loginPass").value;
+
+      if (emailInput === AUTH_EMAIL.toLowerCase() && passInput === AUTH_PASS) {
+        document.getElementById("loginOverlay").style.display = "none";
+        loadDashboardData();
+      } else {
+        document.getElementById("loginError").style.display = "block";
+      }
+    }
+
+    function showAlert(msg, isError = false) {
+      const el = document.getElementById("globalAlert");
+      el.className = "alert-banner " + (isError ? "alert-error" : "alert-success");
+      el.innerHTML = msg;
+      el.style.display = "block";
+      setTimeout(() => { el.style.display = "none"; }, 4000);
+    }
+
+    function loadDashboardData() {
+      const filterVal = document.getElementById("monthFilter").value;
+      const targetMonth = (filterVal === "LOADING" || !filterVal) ? "" : filterVal;
+
+      const callbackName = "cb_" + Date.now();
+      window[callbackName] = function(response) {
+        delete window[callbackName];
+        document.body.removeChild(script);
+        if (response.status === "success") {
+          renderDashboard(response, targetMonth);
+        }
+      };
+
+      const script = document.createElement("script");
+      script.src = SCRIPT_URL + "?action=getData&monthFilter=" + encodeURIComponent(targetMonth) + "&callback=" + callbackName;
+      document.body.appendChild(script);
+    }
+
+    function renderDashboard(data, currentSelectedFilter) {
+      document.getElementById("kpiSales").innerText = "Rs." + data.kpis.totalSales.toLocaleString();
+      document.getElementById("kpiCost").innerText = "Rs." + data.kpis.totalCost.toLocaleString();
+      document.getElementById("kpiProfit").innerText = "Rs." + data.kpis.netProfit.toLocaleString();
+      document.getElementById("kpiOrders").innerText = data.kpis.totalOrders;
+      document.getElementById("kpiUnits").innerText = data.kpis.totalInventoryUnits;
+      document.getElementById("kpiLowStock").innerText = data.kpis.lowStockCount;
+
+      const monthSelect = document.getElementById("monthFilter");
+      const currentSelected = currentSelectedFilter || data.currentMonthDefault;
+      
+      let html = `<option value="${data.currentMonthDefault}">${data.currentMonthDefault}</option>`;
+      html += `<option value="ALL">All Months</option>`;
+      data.availableMonths.forEach(m => {
+        if (m !== data.currentMonthDefault) html += `<option value="${m}">${m}</option>`;
+      });
+      monthSelect.innerHTML = html;
+      monthSelect.value = currentSelected;
+
+      cachedTransactions = data.transactions;
+      renderTransactionTable(cachedTransactions);
+    }
+
+    function resetToCurrentMonth() {
+      document.getElementById("monthFilter").value = "";
+      loadDashboardData();
+    }
+
+    function renderTransactionTable(txList) {
+      const tbody = document.getElementById("txTableBody");
+      if (!txList || txList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No transactions.</td></tr>`;
+        return;
+      }
+
+      let html = "";
+      txList.forEach((tx, idx) => {
+        const isSale = tx.type.toLowerCase().includes("sale");
+        
+        html += `
+          <tr>
+            <td>${tx.date}</td>
+            <td><strong>${tx.orderNumber || '-'}</strong></td>
+            <td><span class="badge ${isSale ? 'badge-sale' : 'badge-purchase'}">${tx.type}</span></td>
+            <td>${tx.customer || '-'}</td>
+            <td>${tx.product}</td>
+            <td>${tx.quantity}</td>
+            <td>Rs.${tx.totalAmount.toLocaleString()}</td>
+            <td>
+              ${isSale ? `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="openInvoice(${idx})"><i class="fa-solid fa-file-invoice"></i></button>` : '-'}
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function switchFormTab(type) {
+      if (type === 'sale') {
+        document.getElementById("saleForm").style.display = "block";
+        document.getElementById("purchaseForm").style.display = "none";
+        document.getElementById("tabSaleBtn").classList.add("active");
+        document.getElementById("tabPurchaseBtn").classList.remove("active");
+      } else {
+        document.getElementById("saleForm").style.display = "none";
+        document.getElementById("purchaseForm").style.display = "block";
+        document.getElementById("tabPurchaseBtn").classList.add("active");
+        document.getElementById("tabSaleBtn").classList.remove("active");
+      }
+    }
+
+    async function handleSaleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById("saleSubmitBtn");
+      btn.disabled = true;
+
+      const payload = {
+        action: "addSale",
+        date: document.getElementById("saleDate").value,
+        customerName: document.getElementById("saleCustomer").value,
+        phone: document.getElementById("salePhone").value,
+        productName: document.getElementById("saleProductName").value,
+        address: document.getElementById("saleAddress").value,
+        sellingPrice: document.getElementById("salePrice").value,
+        quantity: document.getElementById("saleQty").value,
+        costPrice: document.getElementById("saleCost").value,
+        shippingCharges: document.getElementById("saleShipping").value,
+        transactionId: "TXN-" + Date.now()
+      };
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const res = await response.json();
+        if (res.status === "success") {
+          showAlert(`Sale Saved! Order #: ${res.orderNumber}`);
+          document.getElementById("saleForm").reset();
+          loadDashboardData();
+        } else {
+          showAlert(res.message, true);
+        }
+      } catch (err) {
+        showAlert("Server Error", true);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function handlePurchaseSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById("purSubmitBtn");
+      btn.disabled = true;
+
+      const payload = {
+        action: "addPurchase",
+        date: document.getElementById("purDate").value,
+        productName: document.getElementById("purProduct").value,
+        purchasePrice: document.getElementById("purPrice").value,
+        quantity: document.getElementById("purQty").value,
+        transactionId: "PUR-" + Date.now()
+      };
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const res = await response.json();
+        if (res.status === "success") {
+          showAlert("Stock Updated!");
+          document.getElementById("purchaseForm").reset();
+          loadDashboardData();
+        } else {
+          showAlert(res.message, true);
+        }
+      } catch (err) {
+        showAlert("Error connecting.", true);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function openInvoice(idx) {
+      const tx = cachedTransactions[idx];
+      if (!tx) return;
+      currentActiveTx = tx;
+
+      document.getElementById("invOrderNum").innerText = tx.orderNumber || "AC-UNKNOWN";
+      document.getElementById("invDate").innerText = tx.date;
+      document.getElementById("invCustomer").innerText = tx.customer;
+      document.getElementById("invPhone").innerText = tx.phone || "N/A";
+      document.getElementById("invAddress").innerText = tx.address || "N/A";
+      
+      document.getElementById("invProduct").innerText = tx.product;
+      document.getElementById("invQty").innerText = tx.quantity;
+      document.getElementById("invPrice").innerText = "Rs." + tx.price.toLocaleString();
+      
+      const subtotal = tx.price * tx.quantity;
+      document.getElementById("invSubtotal").innerText = "Rs." + subtotal.toLocaleString();
+      document.getElementById("invSubtotalText").innerText = "Rs." + subtotal.toLocaleString();
+      document.getElementById("invShipping").innerText = "Rs." + (tx.shipping || 0).toLocaleString();
+      document.getElementById("invGrandTotal").innerText = "Rs." + tx.totalAmount.toLocaleString();
+
+      document.getElementById("invoiceModal").classList.add("active");
+    }
+
+    function closeInvoiceModal() {
+      document.getElementById("invoiceModal").classList.remove("active");
+    }
+
+    async function shareInvoiceImage() {
+      if (!currentActiveTx) return;
+      const captureArea = document.getElementById("invoiceCaptureArea");
+      
+      try {
+        const canvas = await html2canvas(captureArea, { scale: 2, useCORS: true });
+        canvas.toBlob(async (blob) => {
+          const file = new File([blob], `Invoice_${currentActiveTx.orderNumber}.png`, { type: "image/png" });
+          const shareMsg = `Aslam o Alaikum ${currentActiveTx.customer}! 🌸\nThank you for shopping with Afsheen Collection! Aap ki invoice sath attach hai, kindly check kar lein.\nHumein umeed hai ke aap ko hamari product bohot pasand aayegi! ❤️\nBest Regards,\nAfsheen Collection ✨`;
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({ title: `Invoice ${currentActiveTx.orderNumber}`, text: shareMsg, files: [file] });
+            } catch (err) {
+              fallbackDownload(blob, shareMsg);
+            }
+          } else {
+            fallbackDownload(blob, shareMsg);
+          }
+        }, "image/png");
+      } catch (err) {
+        showAlert("Failed to create invoice image.", true);
+      }
+    }
+
+    function fallbackDownload(blob, message) {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Invoice_${currentActiveTx.orderNumber}.png`;
+      link.click();
+
+      navigator.clipboard.writeText(message);
+      alert("Invoice PNG Downloaded!\nGreeting text COPIED to clipboard for WhatsApp!");
+    }
+
+    function filterTable() {
+      const q = document.getElementById("searchBox").value.toLowerCase();
+      const filtered = cachedTransactions.filter(tx => 
+        tx.customer.toLowerCase().includes(q) ||
+        tx.product.toLowerCase().includes(q) ||
+        (tx.orderNumber && tx.orderNumber.toLowerCase().includes(q))
+      );
+      renderTransactionTable(filtered);
+    }
+  </script>
+</body>
+</html>
