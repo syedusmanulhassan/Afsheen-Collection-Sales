@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Afsheen Collection - Management System</title>
+  <title>Afsheen Collection System</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -24,133 +24,133 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg-pink); color: var(--text-main); padding: 12px; min-height: 100vh; }
+    html, body { width: 100%; height: 100%; overflow-x: hidden; background-color: var(--bg-pink); color: var(--text-main); }
+    body { padding: 10px; }
 
-    /* Loading Overlay Animation */
+    /* Centered Login Screen Fix */
+    #loginOverlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(139, 38, 62, 0.95); display: flex; align-items: center; justify-content: center;
+      z-index: 99999; padding: 16px;
+    }
+    .login-card {
+      background: #fff; padding: 30px 24px; border-radius: var(--radius);
+      width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      margin: auto;
+    }
+    .login-card h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.5rem; margin-bottom: 6px; }
+
     #loadingOverlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255, 245, 247, 0.85); display: none; align-items: center; justify-content: center; z-index: 9998;
-      flex-direction: column; gap: 12px; font-weight: 700; color: var(--burgundy);
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(255, 245, 247, 0.85); display: none; align-items: center; justify-content: center;
+      z-index: 9998; flex-direction: column; gap: 12px; font-weight: 700; color: var(--burgundy);
     }
     .spinner {
-      width: 42px; height: 42px; border: 4px solid var(--border-color);
+      width: 40px; height: 40px; border: 4px solid var(--border-color);
       border-top: 4px solid var(--burgundy); border-radius: 50%; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    #loginOverlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(139, 38, 62, 0.96); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 16px;
-    }
-    .login-card { background: #fff; padding: 28px 20px; border-radius: var(--radius); width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
-    .login-card h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.5rem; margin-bottom: 4px; }
-
-    .app-container { max-width: 1200px; margin: 0 auto; }
+    .app-container { max-width: 1200px; margin: 0 auto; width: 100%; }
     header {
-      background: var(--card-bg); padding: 16px; border-radius: var(--radius);
-      box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px;
-      margin-bottom: 16px; border-bottom: 3px solid var(--gold);
+      background: var(--card-bg); padding: 14px; border-radius: var(--radius);
+      box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px;
+      margin-bottom: 14px; border-bottom: 3px solid var(--gold);
     }
     @media(min-width: 768px) {
-      header { flex-direction: row; justify-content: space-between; align-items: center; padding: 20px; }
-      body { padding: 20px; }
+      header { flex-direction: row; justify-content: space-between; align-items: center; padding: 18px; }
+      body { padding: 16px; }
     }
 
-    .brand-title h1 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.5rem; }
-    .brand-title p { color: var(--gold); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .brand-title h1 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.3rem; }
+    .brand-title p { color: var(--gold); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-    .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; align-items: center; }
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; align-items: center; }
     .filter-bar select, .filter-bar input[type="date"], .form-control {
-      padding: 8px 12px; border: 1.5px solid var(--border-color); border-radius: 8px; outline: none; font-size: 0.85rem; background: #fff;
+      padding: 8px 10px; border: 1.5px solid var(--border-color); border-radius: 8px; outline: none; font-size: 0.82rem; background: #fff; width: 100%;
     }
-    .filter-bar select:focus, .form-control:focus { border-color: var(--burgundy); box-shadow: 0 0 0 3px rgba(139, 38, 62, 0.1); }
+    .filter-bar select { flex: 1; min-width: 130px; }
+    .filter-bar input[type="date"] { flex: 1; min-width: 110px; }
 
     .btn {
-      padding: 10px 14px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+      padding: 10px 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.82rem; cursor: pointer;
       display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease;
     }
     .btn-primary { background-color: var(--burgundy); color: #FFFFFF !important; }
-    .btn-primary:active { background-color: var(--burgundy-dark); }
     .btn-gold { background-color: var(--gold); color: #FFFFFF !important; }
     .btn-secondary { background-color: #EDF2F7; color: var(--text-main); }
 
-    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
     @media(min-width: 768px) {
-      .kpi-grid { grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 24px; }
+      .kpi-grid { grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
     }
-    .kpi-card { background: var(--card-bg); padding: 14px 12px; border-radius: var(--radius); box-shadow: var(--shadow); border-left: 4px solid var(--burgundy); }
+    .kpi-card { background: var(--card-bg); padding: 12px 10px; border-radius: var(--radius); box-shadow: var(--shadow); border-left: 4px solid var(--burgundy); }
     .kpi-card.gold-accent { border-left-color: var(--gold); }
-    .kpi-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-    .kpi-value { font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-top: 2px; }
+    .kpi-title { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+    .kpi-value { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-top: 2px; }
 
-    .main-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-    @media (min-width: 992px) { .main-grid { grid-template-columns: 1fr 1.6fr; gap: 24px; } }
+    .main-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 992px) { .main-grid { grid-template-columns: 1fr 1.5fr; gap: 20px; } }
 
-    .card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
-    .card-title { font-size: 1rem; font-weight: 700; color: var(--burgundy); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--bg-pink); padding-bottom: 8px; }
+    .card { background: var(--card-bg); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--burgundy); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--bg-pink); padding-bottom: 6px; }
 
-    .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
-    .tab-btn { flex: 1; padding: 10px; background: transparent; border: none; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 2px solid var(--border-color); padding-bottom: 6px; }
+    .tab-btn { flex: 1; padding: 8px; background: transparent; border: none; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.8rem; }
     .tab-btn.active { background: var(--burgundy); color: #FFF !important; }
 
-    .form-group { margin-bottom: 12px; text-align: left; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-group { margin-bottom: 10px; text-align: left; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; margin-bottom: 3px; }
+    
+    /* Mobile Responsive Form Inputs Fix */
+    .form-row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media(min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
 
-    .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.82rem; }
-    th { background-color: var(--bg-pink); color: var(--burgundy); padding: 10px; font-weight: 700; white-space: nowrap; }
-    td { padding: 10px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+    .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.8rem; }
+    th { background-color: var(--bg-pink); color: var(--burgundy); padding: 8px 10px; font-weight: 700; white-space: nowrap; }
+    td { padding: 8px 10px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
 
-    .badge { padding: 4px 6px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+    .badge { padding: 3px 6px; border-radius: 8px; font-size: 0.68rem; font-weight: 700; }
     .badge-sale { background: #E6FFFA; color: #234E52; }
     .badge-purchase { background: #EBF8FF; color: #2B6CB0; }
 
-    /* Responsive Invoice Popup */
+    /* Invoice Modal Styling */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 10px; overflow-y: auto;
     }
     .modal-overlay.active { display: flex; }
-    .invoice-card { background: #FFF; width: 100%; max-width: 480px; border-radius: var(--radius); padding: 20px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .invoice-card { background: #FFF; width: 100%; max-width: 440px; border-radius: var(--radius); padding: 16px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: auto; }
     
-    .invoice-logo-container {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .invoice-logo-container img {
-      max-width: 140px;
-      height: auto;
-      display: inline-block;
-    }
+    .invoice-logo-container { text-align: center; margin-bottom: 6px; }
+    .invoice-logo-container img { max-width: 130px; height: auto; display: inline-block; }
 
-    .invoice-header { text-align: center; border-bottom: 2px dashed var(--gold); padding-bottom: 12px; margin-bottom: 14px; }
-    .invoice-header h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.3rem; margin-top: 4px; }
-    .invoice-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; margin-bottom: 14px; }
-    .invoice-totals { text-align: right; font-size: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 10px; }
-    .invoice-totals .grand-total { font-size: 1.1rem; font-weight: 700; color: var(--burgundy); margin-top: 4px; }
+    .invoice-header { text-align: center; border-bottom: 2px dashed var(--gold); padding-bottom: 10px; margin-bottom: 12px; }
+    .invoice-header h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.2rem; margin-top: 2px; }
+    .invoice-details { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.78rem; margin-bottom: 12px; }
+    .invoice-totals { text-align: right; font-size: 0.82rem; border-top: 1px solid var(--border-color); padding-top: 8px; }
+    .invoice-totals .grand-total { font-size: 1.05rem; font-weight: 700; color: var(--burgundy); margin-top: 2px; }
 
-    .alert-banner { padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 0.82rem; display: none; }
+    .alert-banner { padding: 8px 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.8rem; display: none; }
     .alert-error { background: #FFF5F5; color: #C53030; border: 1px solid #FEB2B2; }
     .alert-success { background: #F0FFF4; color: #276749; border: 1px solid #9AE6B4; }
   </style>
 </head>
 <body>
 
-  <!-- Loading Animation Bar -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div>Refreshing System Data...</div>
+    <div>Syncing Data...</div>
   </div>
 
-  <!-- Auth Screen -->
   <div id="loginOverlay">
     <div class="login-card">
       <h2>AFSHEEN COLLECTION</h2>
-      <p style="font-size:0.8rem; color: var(--text-muted); margin-bottom: 16px;">System Access Login</p>
+      <p style="font-size:0.75rem; color: var(--text-muted); margin-bottom: 14px;">System Login</p>
       
       <div class="form-group">
-        <label>Email Address</label>
+        <label>Email</label>
         <input type="email" id="loginEmail" class="form-control" placeholder="ibrahim@afsheencollection.pk">
       </div>
       <div class="form-group">
@@ -158,10 +158,10 @@
         <input type="password" id="loginPass" class="form-control" placeholder="••••••••">
       </div>
 
-      <button class="btn btn-primary" style="width: 100%;" onclick="unlockDashboard()">
+      <button class="btn btn-primary" style="width: 100%; margin-top:4px;" onclick="unlockDashboard()">
         <i class="fa-solid fa-lock-open"></i> Login
       </button>
-      <p id="loginError" style="color:#E53E3E; font-size:0.75rem; margin-top:10px; display:none;">Invalid Credentials!</p>
+      <p id="loginError" style="color:#E53E3E; font-size:0.72rem; margin-top:8px; display:none;">Invalid Credentials!</p>
     </div>
   </div>
 
@@ -172,161 +172,87 @@
         <p>Sales & Invoice System</p>
       </div>
       <div class="filter-bar">
-        <select id="monthFilter" onchange="loadDashboardData()" style="flex:1;">
+        <select id="monthFilter" onchange="loadDashboardData()">
           <option value="LOADING">Loading Months...</option>
         </select>
-        
-        <!-- Custom Date Range Filters -->
         <input type="date" id="filterStartDate" onchange="applyCustomDateFilter()">
         <input type="date" id="filterEndDate" onchange="applyCustomDateFilter()">
 
-        <button class="btn btn-secondary" onclick="resetToCurrentMonth()" title="Reset Filters">
-          <i class="fa-solid fa-rotate-left"></i> Reset
+        <button class="btn btn-secondary" onclick="resetToCurrentMonth()">
+          <i class="fa-solid fa-rotate-left"></i>
         </button>
-        <button class="btn btn-gold" onclick="loadDashboardData(true)" title="Refresh System">
-          <i class="fa-solid fa-rotate"></i> Refresh
+        <button class="btn btn-gold" onclick="loadDashboardData(true)">
+          <i class="fa-solid fa-rotate"></i>
         </button>
       </div>
     </header>
 
     <div id="globalAlert" class="alert-banner"></div>
 
-    <!-- KPIs -->
     <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-title">Sales</div>
-        <div class="kpi-value" id="kpiSales">Rs.0</div>
-      </div>
-      <div class="kpi-card gold-accent">
-        <div class="kpi-title">Cost</div>
-        <div class="kpi-value" id="kpiCost">Rs.0</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title">Profit</div>
-        <div class="kpi-value" id="kpiProfit" style="color: #276749;">Rs.0</div>
-      </div>
-      <div class="kpi-card gold-accent">
-        <div class="kpi-title">Orders</div>
-        <div class="kpi-value" id="kpiOrders">0</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title">Units</div>
-        <div class="kpi-value" id="kpiUnits">0</div>
-      </div>
-      <div class="kpi-card gold-accent">
-        <div class="kpi-title">Low Stock</div>
-        <div class="kpi-value" id="kpiLowStock" style="color: #C53030;">0</div>
-      </div>
+      <div class="kpi-card"><div class="kpi-title">Sales</div><div class="kpi-value" id="kpiSales">Rs.0</div></div>
+      <div class="kpi-card gold-accent"><div class="kpi-title">Cost</div><div class="kpi-value" id="kpiCost">Rs.0</div></div>
+      <div class="kpi-card"><div class="kpi-title">Profit</div><div class="kpi-value" id="kpiProfit" style="color: #276749;">Rs.0</div></div>
+      <div class="kpi-card gold-accent"><div class="kpi-title">Orders</div><div class="kpi-value" id="kpiOrders">0</div></div>
+      <div class="kpi-card"><div class="kpi-title">Units</div><div class="kpi-value" id="kpiUnits">0</div></div>
+      <div class="kpi-card gold-accent"><div class="kpi-title">Low Stock</div><div class="kpi-value" id="kpiLowStock" style="color: #C53030;">0</div></div>
     </div>
 
     <div class="main-grid">
       <div>
         <div class="card">
           <div class="tabs">
-            <button class="tab-btn active" id="tabSaleBtn" onclick="switchFormTab('sale')">
-              <i class="fa-solid fa-cart-plus"></i> Customer Sale
-            </button>
-            <button class="tab-btn" id="tabPurchaseBtn" onclick="switchFormTab('purchase')">
-              <i class="fa-solid fa-truck-ramp-box"></i> Add Stock
-            </button>
+            <button class="tab-btn active" id="tabSaleBtn" onclick="switchFormTab('sale')"><i class="fa-solid fa-cart-plus"></i> Customer Sale</button>
+            <button class="tab-btn" id="tabPurchaseBtn" onclick="switchFormTab('purchase')"><i class="fa-solid fa-truck-ramp-box"></i> Add Stock</button>
           </div>
 
-          <!-- Sale Form -->
           <form id="saleForm" onsubmit="handleSaleSubmit(event)">
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" id="saleDate" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label>Customer Name *</label>
-              <input type="text" id="saleCustomer" class="form-control" placeholder="e.g. Ayesha Khan" required>
-            </div>
-            <div class="form-group">
-              <label>Product Name (Write Product) *</label>
-              <input type="text" id="saleProductName" class="form-control" placeholder="e.g. Lip Velvet Shade 02 / Deal Pack" required>
-            </div>
+            <div class="form-group"><label>Date</label><input type="date" id="saleDate" class="form-control" required></div>
+            <div class="form-group"><label>Customer Name *</label><input type="text" id="saleCustomer" class="form-control" placeholder="e.g. Ayesha Khan" required></div>
+            <div class="form-group"><label>Product Name *</label><input type="text" id="saleProductName" class="form-control" placeholder="e.g. Lip Velvet Shade 02" required></div>
             <div class="form-row">
-              <div class="form-group">
-                <label>Phone</label>
-                <input type="text" id="salePhone" class="form-control" placeholder="03001234567">
-              </div>
-              <div class="form-group">
-                <label>Quantity *</label>
-                <input type="number" id="saleQty" class="form-control" min="1" value="1" required>
-              </div>
+              <div class="form-group"><label>Phone</label><input type="text" id="salePhone" class="form-control" placeholder="03001234567"></div>
+              <div class="form-group"><label>Quantity *</label><input type="number" id="saleQty" class="form-control" min="1" value="1" required></div>
             </div>
-            <div class="form-group">
-              <label>Address</label>
-              <input type="text" id="saleAddress" class="form-control" placeholder="Delivery Address">
-            </div>
+            <div class="form-group"><label>Address</label><input type="text" id="saleAddress" class="form-control" placeholder="Delivery Address"></div>
             <div class="form-row">
-              <div class="form-group">
-                <label>Sale Price (Rs) *</label>
-                <input type="number" id="salePrice" class="form-control" min="0" step="0.01" required>
-              </div>
-              <div class="form-group">
-                <label>Cost/Unit (Rs) *</label>
-                <input type="number" id="saleCost" class="form-control" min="0" step="0.01" required>
-              </div>
+              <div class="form-group"><label>Sale Price (Rs) *</label><input type="number" id="salePrice" class="form-control" min="0" step="0.01" required></div>
+              <div class="form-group"><label>Cost/Unit (Rs) *</label><input type="number" id="saleCost" class="form-control" min="0" step="0.01" required></div>
             </div>
-            <div class="form-group">
-              <label>Shipping Fee (Rs)</label>
-              <input type="number" id="saleShipping" class="form-control" min="0" value="0">
-            </div>
+            <div class="form-group"><label>Shipping Fee (Rs)</label><input type="number" id="saleShipping" class="form-control" min="0" value="0"></div>
 
-            <button type="submit" id="saleSubmitBtn" class="btn btn-primary" style="width:100%; margin-top: 6px;">
+            <button type="submit" id="saleSubmitBtn" class="btn btn-primary" style="width:100%; margin-top: 4px;">
               <i class="fa-solid fa-check-circle"></i> Save Sale & Make Invoice
             </button>
           </form>
 
-          <!-- Purchase Form -->
           <form id="purchaseForm" onsubmit="handlePurchaseSubmit(event)" style="display: none;">
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" id="purDate" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label>Product Name (Stock Purchase) *</label>
-              <input type="text" id="purProduct" class="form-control" placeholder="e.g. Foundation Tube Shade 01" required>
-            </div>
+            <div class="form-group"><label>Date</label><input type="date" id="purDate" class="form-control" required></div>
+            <div class="form-group"><label>Product Name *</label><input type="text" id="purProduct" class="form-control" placeholder="e.g. Foundation Tube" required></div>
             <div class="form-row">
-              <div class="form-group">
-                <label>Unit Cost (Rs) *</label>
-                <input type="number" id="purPrice" class="form-control" min="0" step="0.01" required>
-              </div>
-              <div class="form-group">
-                <label>Quantity *</label>
-                <input type="number" id="purQty" class="form-control" min="1" step="1" required>
-              </div>
+              <div class="form-group"><label>Unit Cost (Rs) *</label><input type="number" id="purPrice" class="form-control" min="0" step="0.01" required></div>
+              <div class="form-group"><label>Quantity *</label><input type="number" id="purQty" class="form-control" min="1" step="1" required></div>
             </div>
 
-            <button type="submit" id="purSubmitBtn" class="btn btn-gold" style="width:100%; margin-top: 6px;">
+            <button type="submit" id="purSubmitBtn" class="btn btn-gold" style="width:100%; margin-top: 4px;">
               <i class="fa-solid fa-boxes-stacked"></i> Add Purchase
             </button>
           </form>
         </div>
       </div>
 
-      <!-- Transaction Log -->
       <div>
         <div class="card">
           <div class="card-title">
             <span><i class="fa-solid fa-list-check"></i> Transactions</span>
-            <input type="text" id="searchBox" onkeyup="filterTable()" placeholder="Search..." class="form-control" style="width: 120px; font-size:0.75rem; padding: 6px 8px;">
+            <input type="text" id="searchBox" onkeyup="filterTable()" placeholder="Search..." class="form-control" style="width: 110px; font-size:0.75rem; padding: 4px 6px;">
           </div>
           
           <div class="table-container" style="max-height: 420px; overflow-y: auto;">
             <table>
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Order #</th>
-                  <th>Type</th>
-                  <th>Customer</th>
-                  <th>Product</th>
-                  <th>Qty</th>
-                  <th>Total</th>
-                  <th>Action</th>
+                  <th>Date</th><th>Order #</th><th>Type</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Action</th>
                 </tr>
               </thead>
               <tbody id="txTableBody">
@@ -336,55 +262,45 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- Mobile Responsive Invoice Modal -->
   <div class="modal-overlay" id="invoiceModal">
     <div class="invoice-card" id="invoiceCaptureArea">
       
-      <!-- LOGO / INVOICE BADGE IMAGE HEADER -->
+      <!-- INVOICE LOGO IMAGE FIX -->
       <div class="invoice-logo-container">
-        <img src="Invoice image.png" alt="Afsheen Invoice Header Badge" id="invoiceBadgeLogo" onerror="this.src='Afsheen Beauty Collection Badge.png';">
+        <img src="Inovice image.png" alt="Afsheen Badge" id="invoiceBadgeLogo" onerror="this.src='Afsheen Beauty Collection Badge.png';">
       </div>
 
       <div class="invoice-header">
         <h2>AFSHEEN COLLECTION</h2>
-        <p style="font-size: 0.7rem; color: var(--gold); font-weight:700;">LUXURY COSMETICS & BEAUTY</p>
-        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">Customer Invoice</p>
+        <p style="font-size: 0.68rem; color: var(--gold); font-weight:700;">LUXURY COSMETICS & BEAUTY</p>
+        <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">Customer Invoice</p>
       </div>
 
       <div class="invoice-details">
-        <div>
-          <strong>Order #:</strong> <span id="invOrderNum">-</span><br>
-          <strong>Date:</strong> <span id="invDate">-</span>
-        </div>
-        <div style="text-align: right;">
-          <strong>Customer:</strong> <span id="invCustomer">-</span><br>
-          <strong>Phone:</strong> <span id="invPhone">-</span>
-        </div>
+        <div><strong>Order #:</strong> <span id="invOrderNum">-</span><br><strong>Date:</strong> <span id="invDate">-</span></div>
+        <div style="text-align: right;"><strong>Customer:</strong> <span id="invCustomer">-</span><br><strong>Phone:</strong> <span id="invPhone">-</span></div>
       </div>
 
-      <div style="font-size: 0.8rem; margin-bottom: 12px;">
-        <strong>Address:</strong> <span id="invAddress">-</span>
-      </div>
+      <div style="font-size: 0.78rem; margin-bottom: 10px;"><strong>Address:</strong> <span id="invAddress">-</span></div>
 
-      <table style="width: 100%; margin-bottom: 14px;">
+      <table style="width: 100%; margin-bottom: 12px;">
         <thead>
           <tr style="border-bottom: 2px solid #E2E8F0;">
-            <th style="background:none; color:#000; padding:6px;">Product</th>
-            <th style="background:none; color:#000; text-align:center; padding:6px;">Qty</th>
-            <th style="background:none; color:#000; text-align:right; padding:6px;">Price</th>
-            <th style="background:none; color:#000; text-align:right; padding:6px;">Total</th>
+            <th style="background:none; color:#000; padding:4px;">Product</th>
+            <th style="background:none; color:#000; text-align:center; padding:4px;">Qty</th>
+            <th style="background:none; color:#000; text-align:right; padding:4px;">Price</th>
+            <th style="background:none; color:#000; text-align:right; padding:4px;">Total</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td id="invProduct" style="padding:6px;">-</td>
-            <td id="invQty" style="text-align: center; padding:6px;">0</td>
-            <td id="invPrice" style="text-align: right; padding:6px;">Rs.0</td>
-            <td id="invSubtotal" style="text-align: right; padding:6px;">Rs.0</td>
+            <td id="invProduct" style="padding:4px;">-</td>
+            <td id="invQty" style="text-align: center; padding:4px;">0</td>
+            <td id="invPrice" style="text-align: right; padding:4px;">Rs.0</td>
+            <td id="invSubtotal" style="text-align: right; padding:4px;">Rs.0</td>
           </tr>
         </tbody>
       </table>
@@ -395,24 +311,19 @@
         <div class="grand-total">Grand Total: <span id="invGrandTotal">Rs.0</span></div>
       </div>
 
-      <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top:12px; border-top: 1px dashed #DDD; padding-top:8px;">
+      <div style="text-align: center; font-size: 0.72rem; color: var(--text-muted); margin-top:10px; border-top: 1px dashed #DDD; padding-top:6px;">
         <p>🌸 Thank you for shopping with Afsheen Collection! 🌸</p>
       </div>
 
-      <div style="display: flex; gap: 8px; margin-top: 14px;" data-html2canvas-ignore="true">
-        <button class="btn btn-gold" style="flex:1;" onclick="shareInvoiceImage()">
-          <i class="fa-solid fa-share-nodes"></i> Share Invoice (PNG)
-        </button>
-        <button class="btn btn-secondary" style="width:auto;" onclick="closeInvoiceModal()">
-          Close
-        </button>
+      <div style="display: flex; gap: 6px; margin-top: 12px;" data-html2canvas-ignore="true">
+        <button class="btn btn-gold" style="flex:1;" onclick="shareInvoiceImage()"><i class="fa-solid fa-share-nodes"></i> Share Invoice (PNG)</button>
+        <button class="btn btn-secondary" onclick="closeInvoiceModal()">Close</button>
       </div>
     </div>
   </div>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3kyPc20ixBCOsdVjPQGIzBmE7jDKKDD7bVaZJ2ZKvF0KC8UI80YQBMOXqAbUFh38ipQ/exec";
-    
     const AUTH_EMAIL = "ibrahim@afsheencollection.pk";
     const AUTH_PASS = "Ibr@him1234**";
 
@@ -446,9 +357,7 @@
     }
 
     function loadDashboardData(showSpinner = false) {
-      if (showSpinner) {
-        document.getElementById("loadingOverlay").style.display = "flex";
-      }
+      if (showSpinner) document.getElementById("loadingOverlay").style.display = "flex";
 
       const filterVal = document.getElementById("monthFilter").value;
       const targetMonth = (filterVal === "LOADING" || !filterVal) ? "" : filterVal;
@@ -501,9 +410,7 @@
     function applyCustomDateFilter() {
       const s = document.getElementById("filterStartDate").value;
       const e = document.getElementById("filterEndDate").value;
-      if (s && e) {
-        loadDashboardData(true);
-      }
+      if (s && e) loadDashboardData(true);
     }
 
     function resetToCurrentMonth() {
@@ -516,14 +423,13 @@
     function renderTransactionTable(txList) {
       const tbody = document.getElementById("txTableBody");
       if (!txList || txList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No transactions found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No transactions.</td></tr>`;
         return;
       }
 
       let html = "";
       txList.forEach((tx, idx) => {
         const isSale = tx.type.toLowerCase().includes("sale");
-        
         html += `
           <tr>
             <td>${tx.date}</td>
@@ -534,7 +440,7 @@
             <td>${tx.quantity}</td>
             <td>Rs.${tx.totalAmount.toLocaleString()}</td>
             <td>
-              ${isSale ? `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="openInvoice(${idx})"><i class="fa-solid fa-file-invoice"></i></button>` : '-'}
+              ${isSale ? `<button class="btn btn-secondary" style="padding:3px 6px; font-size:0.72rem;" onclick="openInvoice(${idx})"><i class="fa-solid fa-file-invoice"></i></button>` : '-'}
             </td>
           </tr>
         `;
@@ -643,7 +549,6 @@
       document.getElementById("invCustomer").innerText = tx.customer;
       document.getElementById("invPhone").innerText = tx.phone || "N/A";
       document.getElementById("invAddress").innerText = tx.address || "N/A";
-      
       document.getElementById("invProduct").innerText = tx.product;
       document.getElementById("invQty").innerText = tx.quantity;
       document.getElementById("invPrice").innerText = "Rs." + tx.price.toLocaleString();
@@ -682,7 +587,7 @@
           }
         }, "image/png");
       } catch (err) {
-        showAlert("Failed to create invoice image.", true);
+        showAlert("Failed to generate image.", true);
       }
     }
 
@@ -691,7 +596,6 @@
       link.href = URL.createObjectURL(blob);
       link.download = `Invoice_${currentActiveTx.orderNumber}.png`;
       link.click();
-
       navigator.clipboard.writeText(message);
       alert("Invoice PNG Downloaded!\nGreeting text COPIED to clipboard for WhatsApp!");
     }
