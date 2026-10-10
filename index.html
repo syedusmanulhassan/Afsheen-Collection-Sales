@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Afsheen Collection - Management System</title>
   
-  <!-- PWA Manifest & Mobile App Meta Tags -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="Inovice image.png">
   <link rel="apple-touch-icon" href="Inovice image.png">
@@ -32,298 +31,73 @@
       --radius: 12px;
     }
 
-    *, *:before, *:after {
-      box-sizing: border-box !important;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
+    *, *:before, *:after { box-sizing: border-box !important; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; max-width: 100vw; overflow-x: hidden !important; background-color: var(--bg-pink); color: var(--text-main); }
+    body { padding: 6px; min-height: 100vh; }
 
-    html {
-      width: 100%;
-      max-width: 100vw;
-      overflow-x: hidden !important;
-    }
-
-    body {
-      width: 100%;
-      max-width: 100vw;
-      overflow-x: hidden !important;
-      background-color: var(--bg-pink);
-      color: var(--text-main);
-      padding: 6px;
-      min-height: 100vh;
-    }
-
-    /* Centered Login Viewport */
     #loginOverlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(139, 38, 62, 0.96);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 99999;
-      padding: 12px;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(139, 38, 62, 0.96);
+      display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 12px;
     }
+    .login-card { background: #fff; padding: 20px 14px; border-radius: var(--radius); width: 100%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin: auto; }
+    .login-card h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.2rem; margin-bottom: 4px; }
 
-    .login-card {
-      background: #fff;
-      padding: 20px 14px;
-      border-radius: var(--radius);
-      width: 100%;
-      max-width: 320px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      margin: auto;
-    }
-
-    .login-card h2 {
-      font-family: 'Cinzel', serif;
-      color: var(--burgundy);
-      font-size: 1.2rem;
-      margin-bottom: 4px;
-    }
-
-    /* Loading Spinner Overlay */
     #loadingOverlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(255, 245, 247, 0.88);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9998;
-      flex-direction: column;
-      gap: 12px;
-      font-weight: 700;
-      color: var(--burgundy);
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255, 245, 247, 0.88);
+      display: none; align-items: center; justify-content: center; z-index: 9998; flex-direction: column; gap: 12px; font-weight: 700; color: var(--burgundy);
     }
+    .spinner { width: 36px; height: 36px; border: 4px solid var(--border-color); border-top: 4px solid var(--burgundy); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .spinner {
-      width: 36px; height: 36px;
-      border: 4px solid var(--border-color);
-      border-top: 4px solid var(--burgundy);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
+    .app-container { max-width: 1200px; margin: 0 auto; width: 100%; }
+    header { background: var(--card-bg); padding: 10px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; border-bottom: 3px solid var(--gold); width: 100%; }
+    @media(min-width: 768px) { header { flex-direction: row; justify-content: space-between; align-items: center; padding: 16px; } body { padding: 14px; } }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    .brand-title h1 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.15rem; }
+    .brand-title p { color: var(--gold); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-    .app-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    header {
-      background: var(--card-bg);
-      padding: 10px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 10px;
-      border-bottom: 3px solid var(--gold);
-      width: 100%;
-    }
-
-    @media(min-width: 768px) {
-      header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px;
-      }
-      body { padding: 14px; }
-    }
-
-    .brand-title h1 {
-      font-family: 'Cinzel', serif;
-      color: var(--burgundy);
-      font-size: 1.15rem;
-    }
-
-    .brand-title p {
-      color: var(--gold);
-      font-size: 0.65rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* Responsive Grid Filters */
-    .filter-bar {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
-      width: 100%;
-      align-items: center;
-    }
-
-    @media(min-width: 768px) {
-      .filter-bar {
-        display: flex;
-        width: auto;
-      }
-    }
+    .filter-bar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; width: 100%; align-items: center; }
+    @media(min-width: 768px) { .filter-bar { display: flex; width: auto; } }
 
     .filter-bar select, .filter-bar input[type="date"], .form-control {
-      padding: 7px 8px;
-      border: 1.5px solid var(--border-color);
-      border-radius: 8px;
-      outline: none;
-      font-size: 0.78rem;
-      background: #fff;
-      width: 100% !important;
-      max-width: 100% !important;
-      display: block;
+      padding: 7px 8px; border: 1.5px solid var(--border-color); border-radius: 8px; outline: none; font-size: 0.78rem; background: #fff; width: 100% !important; max-width: 100% !important; display: block;
     }
 
     .btn {
-      padding: 8px 10px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.78rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      transition: all 0.2s ease;
-      width: 100%;
+      padding: 8px 10px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; transition: all 0.2s ease; width: 100%;
     }
-
     .btn-primary { background-color: var(--burgundy); color: #FFFFFF !important; }
     .btn-gold { background-color: var(--gold); color: #FFFFFF !important; }
     .btn-secondary { background-color: #EDF2F7; color: var(--text-main); }
+    .btn-danger { background-color: #FFF5F5; color: #E53E3E; border: 1px solid #FEB2B2; padding: 4px 8px; font-size: 0.7rem; }
 
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
-      margin-bottom: 10px;
-      width: 100%;
-    }
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-bottom: 10px; width: 100%; }
+    @media(min-width: 768px) { .kpi-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; } }
 
-    @media(min-width: 768px) {
-      .kpi-grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 10px;
-        margin-bottom: 16px;
-      }
-    }
-
-    .kpi-card {
-      background: var(--card-bg);
-      padding: 8px 6px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border-left: 3px solid var(--burgundy);
-      width: 100%;
-    }
-
+    .kpi-card { background: var(--card-bg); padding: 8px 6px; border-radius: var(--radius); box-shadow: var(--shadow); border-left: 3px solid var(--burgundy); width: 100%; }
     .kpi-card.gold-accent { border-left-color: var(--gold); }
     .kpi-title { font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
     .kpi-value { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-top: 2px; }
 
-    .main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 10px;
-      width: 100%;
-    }
+    .main-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; width: 100%; }
+    @media (min-width: 992px) { .main-grid { grid-template-columns: 1fr 1.5fr; gap: 16px; } }
 
-    @media (min-width: 992px) {
-      .main-grid { grid-template-columns: 1fr 1.5fr; gap: 16px; }
-    }
+    .card { background: var(--card-bg); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow); margin-bottom: 10px; width: 100%; overflow: hidden; }
+    .card-title { font-size: 0.85rem; font-weight: 700; color: var(--burgundy); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--bg-pink); padding-bottom: 4px; }
 
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 10px;
-      box-shadow: var(--shadow);
-      margin-bottom: 10px;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    .card-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--burgundy);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 2px solid var(--bg-pink);
-      padding-bottom: 4px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 10px;
-      border-bottom: 2px solid var(--border-color);
-      padding-bottom: 4px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 7px;
-      background: transparent;
-      border: none;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-radius: 6px;
-      font-size: 0.75rem;
-    }
-
+    .tabs { display: flex; gap: 4px; margin-bottom: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 4px; }
+    .tab-btn { flex: 1; padding: 7px; background: transparent; border: none; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.75rem; }
     .tab-btn.active { background: var(--burgundy); color: #FFF !important; }
 
-    .form-group {
-      margin-bottom: 8px;
-      text-align: left;
-      width: 100%;
+    .form-group { margin-bottom: 8px; text-align: left; width: 100%; }
+    .form-group label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 2px; }
+
+    /* Dynamic Product Line Box */
+    .product-row-box {
+      background: #FFF0F3; border: 1px solid #FFD6E0; border-radius: 8px; padding: 8px; margin-bottom: 8px; position: relative;
     }
 
-    .form-group label {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    /* Stack Form Row Completely Single Column on Mobile */
-    .form-row {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      width: 100%;
-    }
-
-    @media(min-width: 600px) {
-      .form-row {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    .table-container {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      width: 100%;
-    }
-
+    .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.75rem; }
     th { background-color: var(--bg-pink); color: var(--burgundy); padding: 6px 8px; font-weight: 700; white-space: nowrap; }
     td { padding: 6px 8px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
@@ -332,40 +106,15 @@
     .badge-sale { background: #E6FFFA; color: #234E52; }
     .badge-purchase { background: #EBF8FF; color: #2B6CB0; }
 
-    /* Invoice Modal Layout */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      padding: 6px;
-      overflow-y: auto;
-    }
-
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 6px; overflow-y: auto; }
     .modal-overlay.active { display: flex; }
 
-    .invoice-card {
-      background: #FFF;
-      width: 100%;
-      max-width: 380px;
-      border-radius: var(--radius);
-      padding: 0 0 12px 0;
-      position: relative;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      margin: auto;
-      overflow: hidden;
-    }
-
+    .invoice-card { background: #FFF; width: 100%; max-width: 400px; border-radius: var(--radius); padding: 0 0 12px 0; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin: auto; overflow: hidden; }
     .invoice-logo-container { text-align: center; width: 100%; margin-bottom: 6px; }
     .invoice-logo-container img { width: 100%; height: auto; display: block; object-fit: cover; }
-
     .invoice-content-padding { padding: 0 12px; }
     .invoice-header { text-align: center; border-bottom: 2px dashed var(--gold); padding-bottom: 6px; margin-bottom: 8px; }
-    .invoice-header h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1rem; margin-top: 2px; }
+    .invoice-header h2 { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 1.1rem; margin-top: 2px; }
     .invoice-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; font-size: 0.72rem; margin-bottom: 8px; }
     .invoice-totals { text-align: right; font-size: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 6px; }
     .invoice-totals .grand-total { font-size: 0.95rem; font-weight: 700; color: var(--burgundy); margin-top: 2px; }
@@ -389,7 +138,7 @@
       
       <div class="form-group">
         <label>Email</label>
-        <input type="email" id="loginEmail" class="form-control" placeholder="Email">
+        <input type="email" id="loginEmail" class="form-control" placeholder="ibrahim@afsheencollection.pk">
       </div>
       <div class="form-group">
         <label>Password</label>
@@ -444,41 +193,45 @@
             <button class="tab-btn" id="tabPurchaseBtn" onclick="switchFormTab('purchase')"><i class="fa-solid fa-truck-ramp-box"></i> Add Stock</button>
           </div>
 
+          <!-- Customer Sale Form (Multi Product) -->
           <form id="saleForm" onsubmit="handleSaleSubmit(event)">
             <div class="form-group"><label>Date</label><input type="date" id="saleDate" class="form-control" required></div>
             <div class="form-group"><label>Customer Name *</label><input type="text" id="saleCustomer" class="form-control" placeholder="e.g. Ayesha Khan" required></div>
-            <div class="form-group"><label>Product Name *</label><input type="text" id="saleProductName" class="form-control" placeholder="e.g. Lip Velvet Shade 02" required></div>
-            
-            <div class="form-row">
-              <div class="form-group"><label>Phone</label><input type="text" id="salePhone" class="form-control" placeholder="03001234567"></div>
-              <div class="form-group"><label>Quantity *</label><input type="number" id="saleQty" class="form-control" min="1" value="1" required></div>
-            </div>
-
+            <div class="form-group"><label>Phone</label><input type="text" id="salePhone" class="form-control" placeholder="03001234567"></div>
             <div class="form-group"><label>Address</label><input type="text" id="saleAddress" class="form-control" placeholder="Delivery Address"></div>
-            
-            <div class="form-row">
-              <div class="form-group"><label>Sale Price (Rs) *</label><input type="number" id="salePrice" class="form-control" min="0" step="0.01" required></div>
-              <div class="form-group"><label>Cost/Unit (Rs) *</label><input type="number" id="saleCost" class="form-control" min="0" step="0.01" required></div>
+
+            <!-- Products Container -->
+            <div style="margin: 10px 0 6px 0; font-weight:700; font-size:0.8rem; color:var(--burgundy);">
+              <i class="fa-solid fa-bags-shopping"></i> Order Items / Products:
             </div>
+            <div id="saleProductsList"></div>
+
+            <button type="button" class="btn btn-secondary" onclick="addSaleProductRow()" style="margin-bottom:10px;">
+              <i class="fa-solid fa-plus"></i> Add Another Product
+            </button>
 
             <div class="form-group"><label>Shipping Fee (Rs)</label><input type="number" id="saleShipping" class="form-control" min="0" value="0"></div>
 
             <button type="submit" id="saleSubmitBtn" class="btn btn-primary" style="margin-top: 4px;">
-              <i class="fa-solid fa-check-circle"></i> Save Sale & Make Invoice
+              <i class="fa-solid fa-check-circle"></i> Save Complete Order & Make Invoice
             </button>
           </form>
 
+          <!-- Purchase Form (Multi Product) -->
           <form id="purchaseForm" onsubmit="handlePurchaseSubmit(event)" style="display: none;">
             <div class="form-group"><label>Date</label><input type="date" id="purDate" class="form-control" required></div>
-            <div class="form-group"><label>Product Name *</label><input type="text" id="purProduct" class="form-control" placeholder="e.g. Foundation Tube" required></div>
-            
-            <div class="form-row">
-              <div class="form-group"><label>Unit Cost (Rs) *</label><input type="number" id="purPrice" class="form-control" min="0" step="0.01" required></div>
-              <div class="form-group"><label>Quantity *</label><input type="number" id="purQty" class="form-control" min="1" step="1" required></div>
+
+            <div style="margin: 10px 0 6px 0; font-weight:700; font-size:0.8rem; color:var(--gold);">
+              <i class="fa-solid fa-boxes-stacked"></i> Stock Purchase Items:
             </div>
+            <div id="purProductsList"></div>
+
+            <button type="button" class="btn btn-secondary" onclick="addPurchaseProductRow()" style="margin-bottom:10px;">
+              <i class="fa-solid fa-plus"></i> Add Another Item
+            </button>
 
             <button type="submit" id="purSubmitBtn" class="btn btn-gold" style="margin-top: 4px;">
-              <i class="fa-solid fa-boxes-stacked"></i> Add Purchase
+              <i class="fa-solid fa-boxes-stacked"></i> Add Purchase Stock
             </button>
           </form>
         </div>
@@ -487,19 +240,19 @@
       <div>
         <div class="card">
           <div class="card-title">
-            <span><i class="fa-solid fa-list-check"></i> Transactions</span>
+            <span><i class="fa-solid fa-list-check"></i> Orders & History</span>
             <input type="text" id="searchBox" onkeyup="filterTable()" placeholder="Search..." class="form-control" style="width: 80px; font-size:0.7rem; padding: 3px 4px;">
           </div>
           
-          <div class="table-container" style="max-height: 380px; overflow-y: auto;">
+          <div class="table-container" style="max-height: 420px; overflow-y: auto;">
             <table>
               <thead>
                 <tr>
-                  <th>Date</th><th>Order #</th><th>Type</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Action</th>
+                  <th>Date</th><th>Order #</th><th>Type</th><th>Customer</th><th>Items</th><th>Total</th><th>Action</th>
                 </tr>
               </thead>
               <tbody id="txTableBody">
-                <tr><td colspan="8" style="text-align: center;">Loading...</td></tr>
+                <tr><td colspan="7" style="text-align: center;">Loading...</td></tr>
               </tbody>
             </table>
           </div>
@@ -508,10 +261,10 @@
     </div>
   </div>
 
+  <!-- Multi-Item Printable Invoice Modal -->
   <div class="modal-overlay" id="invoiceModal">
     <div class="invoice-card" id="invoiceCaptureArea">
       
-      <!-- FULL WIDTH BANNER LOGO IMAGE -->
       <div class="invoice-logo-container">
         <img src="Inovice image.png" alt="Afsheen Badge" id="invoiceBadgeLogo" onerror="this.src='Afsheen Beauty Collection Badge.png';">
       </div>
@@ -539,19 +292,12 @@
               <th style="background:none; color:#000; text-align:right; padding:4px;">Total</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td id="invProduct" style="padding:4px;">-</td>
-              <td id="invQty" style="text-align: center; padding:4px;">0</td>
-              <td id="invPrice" style="text-align: right; padding:4px;">Rs.0</td>
-              <td id="invSubtotal" style="text-align: right; padding:4px;">Rs.0</td>
-            </tr>
-          </tbody>
+          <tbody id="invItemsBody"></tbody>
         </table>
 
         <div class="invoice-totals">
-          <div>Subtotal: <span id="invSubtotalText">Rs.0</span></div>
-          <div>Shipping: <span id="invShipping">Rs.0</span></div>
+          <div>Item Subtotal: <span id="invSubtotalText">Rs.0</span></div>
+          <div>Shipping Fee: <span id="invShipping">Rs.0</span></div>
           <div class="grand-total">Grand Total: <span id="invGrandTotal">Rs.0</span></div>
         </div>
 
@@ -580,6 +326,10 @@
       const today = new Date().toISOString().split('T')[0];
       document.getElementById("saleDate").value = today;
       document.getElementById("purDate").value = today;
+
+      // Add default single product row on init
+      addSaleProductRow();
+      addPurchaseProductRow();
     };
 
     function unlockDashboard() {
@@ -600,6 +350,60 @@
       el.innerHTML = msg;
       el.style.display = "block";
       setTimeout(() => { el.style.display = "none"; }, 4000);
+    }
+
+    /* Dynamic Sale Product Row Addition */
+    function addSaleProductRow() {
+      const container = document.getElementById("saleProductsList");
+      const id = Date.now() + Math.random().toString(36).substr(2, 4);
+
+      const html = `
+        <div class="product-row-box" id="sale_row_${id}">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="font-size:0.72rem; font-weight:700; color:var(--burgundy);">Item Row</span>
+            <button type="button" class="btn btn-danger" onclick="removeRow('sale_row_${id}')"><i class="fa-solid fa-trash"></i> Remove</button>
+          </div>
+          <div class="form-group">
+            <label>Product Name *</label>
+            <input type="text" class="form-control sale-prod-name" placeholder="e.g. Velvet Lipstick Shade 02" required>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px;">
+            <div class="form-group"><label>Qty *</label><input type="number" class="form-control sale-prod-qty" min="1" value="1" required></div>
+            <div class="form-group"><label>Price *</label><input type="number" class="form-control sale-prod-price" min="0" step="0.01" placeholder="Selling" required></div>
+            <div class="form-group"><label>Cost *</label><input type="number" class="form-control sale-prod-cost" min="0" step="0.01" placeholder="Unit Cost" required></div>
+          </div>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', html);
+    }
+
+    /* Dynamic Purchase Product Row Addition */
+    function addPurchaseProductRow() {
+      const container = document.getElementById("purProductsList");
+      const id = Date.now() + Math.random().toString(36).substr(2, 4);
+
+      const html = `
+        <div class="product-row-box" id="pur_row_${id}" style="background:#FFFDF5; border-color:#FEEBC8;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="font-size:0.72rem; font-weight:700; color:var(--gold);">Stock Item</span>
+            <button type="button" class="btn btn-danger" onclick="removeRow('pur_row_${id}')"><i class="fa-solid fa-trash"></i> Remove</button>
+          </div>
+          <div class="form-group">
+            <label>Product Name *</label>
+            <input type="text" class="form-control pur-prod-name" placeholder="e.g. Lip Velvet Box" required>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
+            <div class="form-group"><label>Qty *</label><input type="number" class="form-control pur-prod-qty" min="1" value="1" required></div>
+            <div class="form-group"><label>Unit Cost *</label><input type="number" class="form-control pur-prod-price" min="0" step="0.01" placeholder="Cost" required></div>
+          </div>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function removeRow(rowId) {
+      const el = document.getElementById(rowId);
+      if (el) el.remove();
     }
 
     function loadDashboardData(showSpinner = false) {
@@ -669,21 +473,22 @@
     function renderTransactionTable(txList) {
       const tbody = document.getElementById("txTableBody");
       if (!txList || txList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No transactions.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">No orders found.</td></tr>`;
         return;
       }
 
       let html = "";
       txList.forEach((tx, idx) => {
         const isSale = tx.type.toLowerCase().includes("sale");
+        const itemsSummary = tx.items ? tx.items.map(i => `${i.product} (x${i.quantity})`).join(", ") : "-";
+
         html += `
           <tr>
             <td>${tx.date}</td>
             <td><strong>${tx.orderNumber || '-'}</strong></td>
             <td><span class="badge ${isSale ? 'badge-sale' : 'badge-purchase'}">${tx.type}</span></td>
             <td>${tx.customer || '-'}</td>
-            <td>${tx.product}</td>
-            <td>${tx.quantity}</td>
+            <td style="max-width:140px; overflow:hidden; text-overflow:ellipsis;">${itemsSummary}</td>
             <td>Rs.${tx.totalAmount.toLocaleString()}</td>
             <td>
               ${isSale ? `<button class="btn btn-secondary" style="padding:3px 6px; font-size:0.72rem;" onclick="openInvoice(${idx})"><i class="fa-solid fa-file-invoice"></i></button>` : '-'}
@@ -713,17 +518,34 @@
       const btn = document.getElementById("saleSubmitBtn");
       btn.disabled = true;
 
+      const productBoxes = document.querySelectorAll("#saleProductsList .product-row-box");
+      const items = [];
+
+      productBoxes.forEach(box => {
+        const name = box.querySelector(".sale-prod-name").value;
+        const qty = box.querySelector(".sale-prod-qty").value;
+        const price = box.querySelector(".sale-prod-price").value;
+        const cost = box.querySelector(".sale-prod-cost").value;
+
+        if (name && qty && price) {
+          items.push({ productName: name, quantity: qty, sellingPrice: price, costPrice: cost || 0 });
+        }
+      });
+
+      if (items.length === 0) {
+        showAlert("Please add at least 1 product.", true);
+        btn.disabled = false;
+        return;
+      }
+
       const payload = {
         action: "addSale",
         date: document.getElementById("saleDate").value,
         customerName: document.getElementById("saleCustomer").value,
         phone: document.getElementById("salePhone").value,
-        productName: document.getElementById("saleProductName").value,
         address: document.getElementById("saleAddress").value,
-        sellingPrice: document.getElementById("salePrice").value,
-        quantity: document.getElementById("saleQty").value,
-        costPrice: document.getElementById("saleCost").value,
         shippingCharges: document.getElementById("saleShipping").value,
+        items: items,
         transactionId: "TXN-" + Date.now()
       };
 
@@ -736,8 +558,10 @@
 
         const res = await response.json();
         if (res.status === "success") {
-          showAlert(`Sale Saved! Order #: ${res.orderNumber}`);
+          showAlert(`Order Saved! Order #: ${res.orderNumber}`);
           document.getElementById("saleForm").reset();
+          document.getElementById("saleProductsList").innerHTML = "";
+          addSaleProductRow();
           loadDashboardData(true);
         } else {
           showAlert(res.message, true);
@@ -754,12 +578,23 @@
       const btn = document.getElementById("purSubmitBtn");
       btn.disabled = true;
 
+      const productBoxes = document.querySelectorAll("#purProductsList .product-row-box");
+      const items = [];
+
+      productBoxes.forEach(box => {
+        const name = box.querySelector(".pur-prod-name").value;
+        const qty = box.querySelector(".pur-prod-qty").value;
+        const price = box.querySelector(".pur-prod-price").value;
+
+        if (name && qty && price) {
+          items.push({ productName: name, quantity: qty, purchasePrice: price });
+        }
+      });
+
       const payload = {
         action: "addPurchase",
         date: document.getElementById("purDate").value,
-        productName: document.getElementById("purProduct").value,
-        purchasePrice: document.getElementById("purPrice").value,
-        quantity: document.getElementById("purQty").value,
+        items: items,
         transactionId: "PUR-" + Date.now()
       };
 
@@ -774,6 +609,8 @@
         if (res.status === "success") {
           showAlert("Stock Updated!");
           document.getElementById("purchaseForm").reset();
+          document.getElementById("purProductsList").innerHTML = "";
+          addPurchaseProductRow();
           loadDashboardData(true);
         } else {
           showAlert(res.message, true);
@@ -795,13 +632,27 @@
       document.getElementById("invCustomer").innerText = tx.customer;
       document.getElementById("invPhone").innerText = tx.phone || "N/A";
       document.getElementById("invAddress").innerText = tx.address || "N/A";
-      document.getElementById("invProduct").innerText = tx.product;
-      document.getElementById("invQty").innerText = tx.quantity;
-      document.getElementById("invPrice").innerText = "Rs." + tx.price.toLocaleString();
-      
-      const subtotal = tx.price * tx.quantity;
-      document.getElementById("invSubtotal").innerText = "Rs." + subtotal.toLocaleString();
-      document.getElementById("invSubtotalText").innerText = "Rs." + subtotal.toLocaleString();
+
+      const itemsBody = document.getElementById("invItemsBody");
+      let itemsHtml = "";
+      let subtotalSum = 0;
+
+      if (tx.items && tx.items.length > 0) {
+        tx.items.forEach(item => {
+          itemsHtml += `
+            <tr>
+              <td style="padding:4px;">${item.product}</td>
+              <td style="text-align:center; padding:4px;">${item.quantity}</td>
+              <td style="text-align:right; padding:4px;">Rs.${item.price.toLocaleString()}</td>
+              <td style="text-align:right; padding:4px;">Rs.${item.subtotal.toLocaleString()}</td>
+            </tr>
+          `;
+          subtotalSum += item.subtotal;
+        });
+      }
+
+      itemsBody.innerHTML = itemsHtml;
+      document.getElementById("invSubtotalText").innerText = "Rs." + subtotalSum.toLocaleString();
       document.getElementById("invShipping").innerText = "Rs." + (tx.shipping || 0).toLocaleString();
       document.getElementById("invGrandTotal").innerText = "Rs." + tx.totalAmount.toLocaleString();
 
@@ -850,7 +701,6 @@
       const q = document.getElementById("searchBox").value.toLowerCase();
       const filtered = cachedTransactions.filter(tx => 
         tx.customer.toLowerCase().includes(q) ||
-        tx.product.toLowerCase().includes(q) ||
         (tx.orderNumber && tx.orderNumber.toLowerCase().includes(q))
       );
       renderTransactionTable(filtered);
