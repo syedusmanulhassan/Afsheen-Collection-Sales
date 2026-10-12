@@ -103,6 +103,7 @@
     .tabs { display: flex; gap: 4px; margin-bottom: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 4px; }
     .tab-btn { flex: 1; padding: 8px; background: transparent; border: none; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.75rem; }
     .tab-btn.active { background: var(--burgundy); color: #FFF !important; }
+    .tab-btn.active-gold { background: var(--gold); color: #FFF !important; }
 
     .form-group { margin-bottom: 8px; text-align: left; width: 100%; }
     .form-group label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 2px; }
@@ -190,8 +191,8 @@
 
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-title">Sales</div><div class="kpi-value" id="kpiSales">Rs.0</div></div>
-      <div class="kpi-card gold-accent"><div class="kpi-title">Cost</div><div class="kpi-value" id="kpiCost">Rs.0</div></div>
-      <div class="kpi-card"><div class="kpi-title">Profit</div><div class="kpi-value" id="kpiProfit" style="color: #276749;">Rs.0</div></div>
+      <div class="kpi-card gold-accent"><div class="kpi-title" title="Total Purchased Stock Investment">Stock Cost</div><div class="kpi-value" id="kpiCost">Rs.0</div></div>
+      <div class="kpi-card"><div class="kpi-title">Live Net Profit</div><div class="kpi-value" id="kpiProfit" style="color: #276749;">Rs.0</div></div>
       <div class="kpi-card gold-accent"><div class="kpi-title">Orders</div><div class="kpi-value" id="kpiOrders">0</div></div>
       <div class="kpi-card"><div class="kpi-title">Shipping</div><div class="kpi-value" id="kpiShipping">Rs.0</div></div>
       <div class="kpi-card gold-accent"><div class="kpi-title">Avg Order</div><div class="kpi-value" id="kpiAvgOrder">Rs.0</div></div>
@@ -251,7 +252,7 @@
           <div class="card-title">
             <span>Live Stock & Profit Summary</span>
           </div>
-          <div class="table-container" style="max-height: 200px; overflow-y: auto;">
+          <div class="table-container" style="max-height: 240px; overflow-y: auto;">
             <table>
               <thead>
                 <tr>
@@ -260,32 +261,37 @@
                   <th style="text-align: center;">Sold</th>
                   <th style="text-align: center;">Remaining</th>
                   <th style="text-align: right;">Unit Cost</th>
+                  <th style="text-align: right;">Total Stock Cost</th>
                   <th style="text-align: right;">Selling Price</th>
                   <th style="text-align: right;">Total Profit</th>
                 </tr>
               </thead>
               <tbody id="inventorySummaryBody">
-                <tr><td colspan="7" style="text-align: center;">Loading Stock Summary...</td></tr>
+                <tr><td colspan="8" style="text-align: center;">Loading Stock Summary...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title">
-            <span>Orders History</span>
-            <input type="text" id="searchBox" onkeyup="filterTable()" placeholder="Search..." class="form-control" style="width: 80px; font-size:0.7rem; padding: 3px 4px;">
+          <div class="tabs" style="margin-bottom: 8px;">
+            <button class="tab-btn active" id="historySaleTabBtn" onclick="switchHistoryTab('sales')">Customer Invoices</button>
+            <button class="tab-btn" id="historyPurTabBtn" onclick="switchHistoryTab('purchases')">Stock Purchases</button>
+          </div>
+
+          <div class="card-title" style="border:none; padding:0; margin-bottom:8px;">
+            <input type="text" id="searchBox" onkeyup="filterTable()" placeholder="Search history..." class="form-control" style="font-size:0.7rem; padding: 4px 8px;">
           </div>
           
           <div class="table-container" style="max-height: 380px; overflow-y: auto;">
             <table>
               <thead>
-                <tr>
-                  <th>Date</th><th>Order #</th><th>Type</th><th>Customer</th><th>Items</th><th>Total</th><th>Action</th>
+                <tr id="historyTableHeader">
+                  <th>Date</th><th>Order #</th><th>Customer</th><th>Items</th><th>Total</th><th>Action</th>
                 </tr>
               </thead>
               <tbody id="txTableBody">
-                <tr><td colspan="7" style="text-align: center;">Loading...</td></tr>
+                <tr><td colspan="6" style="text-align: center;">Loading...</td></tr>
               </tbody>
             </table>
           </div>
@@ -351,7 +357,9 @@
     const AUTH_EMAIL = "ibrahim@afsheencollection.pk";
     const AUTH_PASS = "Ibr@him1234**";
 
-    let cachedTransactions = [];
+    let cachedSales = [];
+    let cachedPurchases = [];
+    let currentHistoryTab = "sales";
     let currentActiveTx = null;
 
     window.onload = function() {
@@ -361,6 +369,10 @@
 
       addSaleProductRow();
       addPurchaseProductRow();
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
+      }
     };
 
     function unlockDashboard() {
@@ -395,12 +407,12 @@
           </div>
           <div class="form-group">
             <label>Product Name *</label>
-            <input type="text" class="form-control sale-prod-name" placeholder="e.g. Velvet Lipstick Shade 02" required>
+            <input type="text" class="form-control sale-prod-name" placeholder="e.g. Lipstick" required>
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px;">
             <div class="form-group"><label>Qty *</label><input type="number" class="form-control sale-prod-qty" min="1" value="1" required></div>
-            <div class="form-group"><label>Price *</label><input type="number" class="form-control sale-prod-price" min="0" step="0.01" placeholder="Selling" required></div>
-            <div class="form-group"><label>Cost *</label><input type="number" class="form-control sale-prod-cost" min="0" step="0.01" placeholder="Unit Cost" required></div>
+            <div class="form-group"><label>Selling Price *</label><input type="number" class="form-control sale-prod-price" min="0" step="0.01" placeholder="Selling" required></div>
+            <div class="form-group"><label>Cost Price *</label><input type="number" class="form-control sale-prod-cost" min="0" step="0.01" placeholder="Unit Cost" required></div>
           </div>
         </div>
       `;
@@ -419,11 +431,24 @@
           </div>
           <div class="form-group">
             <label>Product Name *</label>
-            <input type="text" class="form-control pur-prod-name" placeholder="e.g. Lip Velvet Box" required>
+            <input type="text" class="form-control pur-prod-name" placeholder="e.g. Lipstick Box / Shampoo" required>
           </div>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
-            <div class="form-group"><label>Qty *</label><input type="number" class="form-control pur-prod-qty" min="1" value="1" required></div>
-            <div class="form-group"><label>Unit Cost *</label><input type="number" class="form-control pur-prod-price" min="0" step="0.01" placeholder="Cost" required></div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:4px;">
+            <div class="form-group">
+              <label>Quantity *</label>
+              <input type="number" class="form-control pur-prod-qty" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label>Cost Type</label>
+              <select class="form-control pur-prod-type">
+                <option value="unit">Per Piece Price (Rs)</option>
+                <option value="box">Total Box/Pack Price (Rs)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Price Amount (Rs) *</label>
+            <input type="number" class="form-control pur-prod-price" min="0" step="0.01" placeholder="Amount" required>
           </div>
         </div>
       `;
@@ -484,22 +509,35 @@
 
       renderStockSummaryTable(data.stockSummary);
 
-      cachedTransactions = data.transactions;
-      renderTransactionTable(cachedTransactions);
+      cachedSales = data.salesTransactions || [];
+      cachedPurchases = data.purchaseTransactions || [];
+      
+      renderHistoryTable();
     }
 
     function renderStockSummaryTable(stockList) {
       const tbody = document.getElementById("inventorySummaryBody");
       if (!stockList || stockList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">No stock history found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">No stock history found.</td></tr>`;
         return;
       }
 
       let html = "";
+      let grandTotalProfit = 0;
+      let grandTotalStockCost = 0;
+      let grandTotalBought = 0;
+
       stockList.forEach(item => {
         const isLow = item.remaining <= 5;
         const badgeClass = isLow ? "background:#FFF5F5; color:#C53030;" : "background:#E6FFFA; color:#234E52;";
-        const labelText = isLow ? `${item.remaining} (Low)` : `${item.remaining} units`;
+        const labelText = item.remaining <= 0 ? `${item.remaining} (Out of Stock)` : `${item.remaining} units`;
+        
+        const itemProfit = item.totalProfit ? Math.round(item.totalProfit) : 0;
+        const itemStockCost = item.totalStockCost ? Math.round(item.totalStockCost) : (item.bought * (item.lastCost || 0));
+
+        grandTotalBought += item.bought;
+        grandTotalStockCost += itemStockCost;
+        grandTotalProfit += itemProfit;
 
         html += `
           <tr>
@@ -509,11 +547,81 @@
             <td style="text-align: center;">
               <span class="badge" style="${badgeClass}">${labelText}</span>
             </td>
-            <td style="text-align: right;">Rs.${item.lastCost ? item.lastCost.toLocaleString() : '0'}</td>
-            <td style="text-align: right;">Rs.${item.lastPrice ? item.lastPrice.toLocaleString() : '0'}</td>
-            <td style="text-align: right; color:#276749; font-weight:bold;">Rs.${item.totalProfit ? Math.round(item.totalProfit).toLocaleString() : '0'}</td>
+            <td style="text-align: right;">Rs.${item.lastCost ? Math.round(item.lastCost).toLocaleString() : '0'}</td>
+            <td style="text-align: right; font-weight:600;">Rs.${itemStockCost.toLocaleString()}</td>
+            <td style="text-align: right;">Rs.${item.lastPrice ? Math.round(item.lastPrice).toLocaleString() : '0'}</td>
+            <td style="text-align: right; color:#276749; font-weight:bold;">Rs.${itemProfit.toLocaleString()}</td>
           </tr>
         `;
+      });
+
+      html += `
+        <tr style="background:#FFF5F7; font-weight:bold; border-top:2px solid var(--burgundy);">
+          <td><strong>Total:</strong></td>
+          <td style="text-align: center;">${grandTotalBought}</td>
+          <td colspan="3" style="text-align: right; color:var(--burgundy);">Total Investment:</td>
+          <td style="text-align: right; color:var(--burgundy);">Rs.${grandTotalStockCost.toLocaleString()}</td>
+          <td style="text-align: right; color:#276749;">Total Profit:</td>
+          <td style="text-align: right; color:#276749; font-size:0.85rem;">Rs.${grandTotalProfit.toLocaleString()}</td>
+        </tr>
+      `;
+
+      tbody.innerHTML = html;
+    }
+
+    function switchHistoryTab(tab) {
+      currentHistoryTab = tab;
+      if (tab === 'sales') {
+        document.getElementById("historySaleTabBtn").classList.add("active");
+        document.getElementById("historyPurTabBtn").classList.remove("active-gold");
+      } else {
+        document.getElementById("historySaleTabBtn").classList.remove("active");
+        document.getElementById("historyPurTabBtn").classList.add("active-gold");
+      }
+      renderHistoryTable();
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById("txTableBody");
+      const isSales = currentHistoryTab === 'sales';
+      const txList = isSales ? cachedSales : cachedPurchases;
+
+      document.getElementById("historyTableHeader").innerHTML = isSales 
+        ? `<th>Date</th><th>Order #</th><th>Customer</th><th>Items</th><th>Total</th><th>Action</th>`
+        : `<th>Date</th><th>Item</th><th>Qty</th><th>Unit Cost</th><th>Total Investment</th>`;
+
+      if (!txList || txList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No ${isSales ? 'sales' : 'purchase'} entries found.</td></tr>`;
+        return;
+      }
+
+      let html = "";
+      txList.forEach((tx, idx) => {
+        if (isSales) {
+          const itemsSummary = tx.items ? tx.items.map(i => `${i.product} (x${i.quantity})`).join(", ") : "-";
+          html += `
+            <tr>
+              <td>${tx.date}</td>
+              <td><strong>${tx.orderNumber || '-'}</strong></td>
+              <td>${tx.customer || '-'}</td>
+              <td style="max-width:140px; overflow:hidden; text-overflow:ellipsis;">${itemsSummary}</td>
+              <td>Rs.${tx.totalAmount.toLocaleString()}</td>
+              <td>
+                <button class="btn-action-inv" onclick="openInvoice(${idx})">Invoice</button>
+              </td>
+            </tr>
+          `;
+        } else {
+          html += `
+            <tr>
+              <td>${tx.date}</td>
+              <td><strong>${tx.product}</strong></td>
+              <td style="text-align:center;">${tx.quantity}</td>
+              <td>Rs.${Math.round(tx.unitCost).toLocaleString()}</td>
+              <td><strong>Rs.${Math.round(tx.totalCost).toLocaleString()}</strong></td>
+            </tr>
+          `;
+        }
       });
       tbody.innerHTML = html;
     }
@@ -529,35 +637,6 @@
       document.getElementById("filterStartDate").value = "";
       document.getElementById("filterEndDate").value = "";
       loadDashboardData(true);
-    }
-
-    function renderTransactionTable(txList) {
-      const tbody = document.getElementById("txTableBody");
-      if (!txList || txList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">No orders found.</td></tr>`;
-        return;
-      }
-
-      let html = "";
-      txList.forEach((tx, idx) => {
-        const isSale = tx.type.toLowerCase().includes("sale");
-        const itemsSummary = tx.items ? tx.items.map(i => `${i.product} (x${i.quantity})`).join(", ") : "-";
-
-        html += `
-          <tr>
-            <td>${tx.date}</td>
-            <td><strong>${tx.orderNumber || '-'}</strong></td>
-            <td><span class="badge ${isSale ? 'badge-sale' : 'badge-purchase'}">${tx.type}</span></td>
-            <td>${tx.customer || '-'}</td>
-            <td style="max-width:140px; overflow:hidden; text-overflow:ellipsis;">${itemsSummary}</td>
-            <td>Rs.${tx.totalAmount.toLocaleString()}</td>
-            <td>
-              ${isSale ? `<button class="btn-action-inv" onclick="openInvoice(${idx})">Invoice</button>` : '-'}
-            </td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
     }
 
     function switchFormTab(type) {
@@ -641,14 +720,17 @@
 
       const productBoxes = document.querySelectorAll("#purProductsList .product-row-box");
       const items = [];
+      let totalAmountAdded = 0;
 
       productBoxes.forEach(box => {
         const name = box.querySelector(".pur-prod-name").value;
         const qty = box.querySelector(".pur-prod-qty").value;
         const price = box.querySelector(".pur-prod-price").value;
+        const priceType = box.querySelector(".pur-prod-type").value;
 
         if (name && qty && price) {
-          items.push({ productName: name, quantity: qty, purchasePrice: price });
+          items.push({ productName: name, quantity: qty, price: price, priceType: priceType });
+          totalAmountAdded += (priceType === "box" ? parseFloat(price) : (parseFloat(price) * parseFloat(qty)));
         }
       });
 
@@ -668,7 +750,7 @@
 
         const res = await response.json();
         if (res.status === "success") {
-          showAlert("Stock Updated!");
+          showAlert(`Stock Updated! Added Total Investment: Rs.${Math.round(totalAmountAdded).toLocaleString()}`);
           document.getElementById("purchaseForm").reset();
           document.getElementById("purProductsList").innerHTML = "";
           addPurchaseProductRow();
@@ -684,7 +766,7 @@
     }
 
     function openInvoice(idx) {
-      const tx = cachedTransactions[idx];
+      const tx = cachedSales[idx];
       if (!tx) return;
       currentActiveTx = tx;
 
@@ -715,7 +797,6 @@
       itemsBody.innerHTML = itemsHtml;
       document.getElementById("invSubtotalText").innerText = "Rs." + subtotalSum.toLocaleString();
 
-      // Free Shipping display handling
       const shippingVal = parseFloat(tx.shipping) || 0;
       if (shippingVal === 0) {
         document.getElementById("invShipping").innerHTML = `<span class="badge badge-free">Free Shipping</span>`;
@@ -768,11 +849,56 @@
 
     function filterTable() {
       const q = document.getElementById("searchBox").value.toLowerCase();
-      const filtered = cachedTransactions.filter(tx => 
-        tx.customer.toLowerCase().includes(q) ||
-        (tx.orderNumber && tx.orderNumber.toLowerCase().includes(q))
-      );
-      renderTransactionTable(filtered);
+      const isSales = currentHistoryTab === 'sales';
+
+      if (isSales) {
+        const filtered = cachedSales.filter(tx => 
+          (tx.customer && tx.customer.toLowerCase().includes(q)) ||
+          (tx.orderNumber && tx.orderNumber.toLowerCase().includes(q)) ||
+          (tx.items && tx.items.some(i => i.product.toLowerCase().includes(q)))
+        );
+        renderFilteredTable(filtered, true);
+      } else {
+        const filtered = cachedPurchases.filter(tx => 
+          (tx.product && tx.product.toLowerCase().includes(q))
+        );
+        renderFilteredTable(filtered, false);
+      }
+    }
+
+    function renderFilteredTable(list, isSales) {
+      const tbody = document.getElementById("txTableBody");
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No matching entries found.</td></tr>`;
+        return;
+      }
+      let html = "";
+      list.forEach((tx, idx) => {
+        if (isSales) {
+          const itemsSummary = tx.items ? tx.items.map(i => `${i.product} (x${i.quantity})`).join(", ") : "-";
+          html += `
+            <tr>
+              <td>${tx.date}</td>
+              <td><strong>${tx.orderNumber || '-'}</strong></td>
+              <td>${tx.customer || '-'}</td>
+              <td style="max-width:140px; overflow:hidden; text-overflow:ellipsis;">${itemsSummary}</td>
+              <td>Rs.${tx.totalAmount.toLocaleString()}</td>
+              <td><button class="btn-action-inv" onclick="openInvoice(${idx})">Invoice</button></td>
+            </tr>
+          `;
+        } else {
+          html += `
+            <tr>
+              <td>${tx.date}</td>
+              <td><strong>${tx.product}</strong></td>
+              <td style="text-align:center;">${tx.quantity}</td>
+              <td>Rs.${Math.round(tx.unitCost).toLocaleString()}</td>
+              <td><strong>Rs.${Math.round(tx.totalCost).toLocaleString()}</strong></td>
+            </tr>
+          `;
+        }
+      });
+      tbody.innerHTML = html;
     }
   </script>
 </body>
